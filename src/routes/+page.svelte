@@ -1,0 +1,2 @@
+<h1>Bodyweight Fitness Recommended Routine</h1>
+<button class="bg-blue-400">Start Workout</button>
