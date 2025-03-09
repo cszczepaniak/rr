@@ -152,6 +152,8 @@
 	let timer = $state(steps[0].duration ?? 0);
 	let timerRunning = $state(false);
 
+	let workoutFinished = $state(false);
+
 	function advance() {
 		stopTimer();
 		stepIndex++;
@@ -162,6 +164,7 @@
 
 	function nextStep() {
 		if (stepIndex >= steps.length - 1) {
+			workoutFinished = true;
 			return;
 		}
 
@@ -217,41 +220,45 @@
 </script>
 
 <div class="flex flex-col items-center">
-	<h1 class="text-7xl mt-8">{currentStep.category}</h1>
-	<h3 class="mt-8">Current movement:</h3>
-	<h3 class="text-3xl">{currentStep.name}</h3>
-
-	{#if resting}
-		<p>Well done! Take a rest.</p>
-		<p class="text-center text-9xl">{timer}s</p>
-		<button
-			class="bg-red-400 disabled:bg-red-200 disabled:text-gray-400 p-1 rounded-sm"
-			onclick={skipRest}>Skip Rest</button
-		>
+	{#if workoutFinished}
+		<p class="text-7xl mt-8">Well done! Your workout is complete!</p>
 	{:else}
-		<div class="my-4">
-			{#if currentStep.reps}
-				<p class="text-2xl">Do <span class="font-bold">{currentStep.reps}</span> reps!</p>
-			{:else if currentStep.duration}
-				<p class="text-2xl">
-					Hold for <span class="font-bold">{currentStep.duration}</span> seconds!
-				</p>
-				<p class="text-center text-9xl">{timer}s</p>
+		<h1 class="text-7xl mt-8">{currentStep.category}</h1>
+		<h3 class="mt-8">Current movement:</h3>
+		<h3 class="text-3xl">{currentStep.name}</h3>
 
-				<div class="flex flex-col items-center mt-2">
-					{#if !timerRunning}
-						<button class="bg-red-400 p-1 rounded-sm" onclick={() => startTimer()}>Start</button>
-					{:else}
-						<button class="bg-red-400 p-1 rounded-sm" onclick={stopTimer}>Stop</button>
-					{/if}
-				</div>
-			{/if}
-		</div>
+		{#if resting}
+			<p>Well done! Take a rest.</p>
+			<p class="text-center text-9xl">{timer}s</p>
+			<button
+				class="bg-red-400 disabled:bg-red-200 disabled:text-gray-400 p-1 rounded-sm"
+				onclick={skipRest}>Skip Rest</button
+			>
+		{:else}
+			<div class="my-4">
+				{#if currentStep.reps}
+					<p class="text-2xl">Do <span class="font-bold">{currentStep.reps}</span> reps!</p>
+				{:else if currentStep.duration}
+					<p class="text-2xl">
+						Hold for <span class="font-bold">{currentStep.duration}</span> seconds!
+					</p>
+					<p class="text-center text-9xl">{timer}s</p>
 
-		<button
-			disabled={timerRunning}
-			class="bg-red-400 disabled:bg-red-200 disabled:text-gray-400 p-1 rounded-sm"
-			onclick={nextStep}>Done</button
-		>
+					<div class="flex flex-col items-center mt-2">
+						{#if !timerRunning}
+							<button class="bg-red-400 p-1 rounded-sm" onclick={() => startTimer()}>Start</button>
+						{:else}
+							<button class="bg-red-400 p-1 rounded-sm" onclick={stopTimer}>Stop</button>
+						{/if}
+					</div>
+				{/if}
+			</div>
+
+			<button
+				disabled={timerRunning}
+				class="bg-red-400 disabled:bg-red-200 disabled:text-gray-400 p-1 rounded-sm"
+				onclick={nextStep}>Done</button
+			>
+		{/if}
 	{/if}
 </div>
