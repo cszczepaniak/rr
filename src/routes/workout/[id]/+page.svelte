@@ -221,9 +221,9 @@
 
 <div class="flex flex-col items-center">
 	{#if workoutFinished}
-		<p class="text-7xl mt-8">Well done! Your workout is complete!</p>
+		<p class="text-7xl mt-8 mx-2 text-center">Well done! Your workout is complete!</p>
 	{:else}
-		<h1 class="text-7xl mt-8">{currentStep.category}</h1>
+		<h1 class="text-7xl mt-8 mx-2 text-center">{currentStep.category}</h1>
 		<h3 class="mt-8">Current movement:</h3>
 		<h3 class="text-3xl">{currentStep.name}</h3>
 
@@ -245,7 +245,7 @@
 					<p class="text-center text-9xl">{timer}s</p>
 
 					<div class="flex flex-col items-center mt-2">
-						{#if !timerRunning}
+						{#if !timerRunning && timer > 0}
 							<button class="bg-red-400 p-1 rounded-sm" onclick={() => startTimer()}>Start</button>
 						{:else}
 							<button class="bg-red-400 p-1 rounded-sm" onclick={stopTimer}>Stop</button>
