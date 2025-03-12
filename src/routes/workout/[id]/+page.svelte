@@ -32,11 +32,6 @@
 	}
 
 	const steps: Step[] = [
-		{
-			category: 'test',
-			name: 'test',
-			duration: 10,
-		},
 		...category('Warmup', [
 			{
 				name: 'Shoulder Circles',
