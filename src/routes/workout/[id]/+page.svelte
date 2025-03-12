@@ -150,14 +150,16 @@
 
 	let stepIndex = $state(0);
 	let currentStep = $derived(steps[stepIndex]);
+	let upcomingStep = $derived(stepIndex < steps.length - 1 ? steps[stepIndex + 1] : null);
 	let resting = $state(false);
+
+	let countingDown = $state(false);
 
 	let timerHandle = $state(0);
 	let timerTicks = $state((steps[0].duration ?? 0) * 10);
 	let timerRunning = $state(false);
 	let timerSeconds = $derived(Math.floor(timerTicks / 10));
 	let timerFraction = $derived(timerTicks % 10);
-	let timerString = $derived(`${timerTicks / 10}s`);
 
 	let workoutFinished = $state(false);
 
@@ -165,12 +167,13 @@
 		stopTimer();
 		stepIndex++;
 		if (currentStep.duration) {
-			timerTicks = currentStep.duration * 10;
+			countingDown = true;
+			timerTicks = 30;
 		}
 	}
 
 	function nextStep() {
-		if (stepIndex >= steps.length - 1) {
+		if (upcomingStep === null) {
 			workoutFinished = true;
 			return;
 		}
@@ -252,7 +255,23 @@
 			<div class="my-4">
 				{#if currentStep.reps}
 					<p class="text-2xl">Do <span class="font-bold">{currentStep.reps}</span> reps!</p>
-				{:else if currentStep.duration}
+				{:else if currentStep.duration && countingDown}
+					<p class="text-2xl">
+						Get ready!
+						{@render timer()}
+
+						<button
+							onclick={() =>
+								startTimer(() => {
+									countingDown = false;
+									timerTicks = (currentStep.duration ?? 0) * 10;
+									startTimer();
+								})}
+						>
+							<IconPlay class="text-red-400 text-8xl" />
+						</button>
+					</p>
+				{:else if currentStep.duration && !countingDown}
 					<p class="text-2xl">
 						Hold for <span class="font-bold">{currentStep.duration}</span> seconds!
 					</p>
