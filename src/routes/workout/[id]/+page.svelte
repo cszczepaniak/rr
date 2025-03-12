@@ -206,7 +206,7 @@
 	}
 
 	async function nextStep() {
-		await fetch(`/api/workout/${$page.params.id}`, {
+		await fetch(`/api/workouts/${$page.params.id}`, {
 			method: 'POST',
 			body: JSON.stringify({
 				index: stepIndex,
