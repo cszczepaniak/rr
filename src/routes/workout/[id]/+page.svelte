@@ -1,4 +1,8 @@
 <script lang="ts">
+	import IconPlay from '~icons/mdi/play-circle';
+	import IconPause from '~icons/mdi/pause-circle';
+	import IconNext from '~icons/mdi/skip-next-circle';
+
 	type Step = {
 		category: string;
 		name: string;
@@ -28,6 +32,11 @@
 	}
 
 	const steps: Step[] = [
+		{
+			category: 'test',
+			name: 'test',
+			duration: 10,
+		},
 		...category('Warmup', [
 			{
 				name: 'Shoulder Circles',
@@ -149,8 +158,11 @@
 	let resting = $state(false);
 
 	let timerHandle = $state(0);
-	let timer = $state(steps[0].duration ?? 0);
+	let timerTicks = $state((steps[0].duration ?? 0) * 10);
 	let timerRunning = $state(false);
+	let timerSeconds = $derived(Math.floor(timerTicks / 10));
+	let timerFraction = $derived(timerTicks % 10);
+	let timerString = $derived(`${timerTicks / 10}s`);
 
 	let workoutFinished = $state(false);
 
@@ -158,7 +170,7 @@
 		stopTimer();
 		stepIndex++;
 		if (currentStep.duration) {
-			timer = currentStep.duration;
+			timerTicks = currentStep.duration * 10;
 		}
 	}
 
@@ -170,7 +182,7 @@
 
 		if (currentStep.restAfter) {
 			resting = true;
-			timer = currentStep.restAfter;
+			timerTicks = currentStep.restAfter * 10;
 			startTimer(() => {
 				resting = false;
 				advance();
@@ -198,15 +210,17 @@
 
 		timerRunning = true;
 
+		timerTicks--;
+
 		timerHandle = setInterval(() => {
-			timer--;
-			if (timer == 0) {
+			timerTicks--;
+			if (timerTicks == 0) {
 				stopTimer();
 				if (onDone) {
 					onDone();
 				}
 			}
-		}, 1000);
+		}, 100);
 	}
 
 	function stopTimer() {
@@ -219,7 +233,13 @@
 	}
 </script>
 
-<div class="flex flex-col items-center">
+{#snippet timer()}
+	<p class="text-right text-9xl">
+		<span>{timerSeconds}</span>.<span>{timerFraction}</span>s
+	</p>
+{/snippet}
+
+<div class="flex flex-col text-center items-center">
 	{#if workoutFinished}
 		<p class="text-7xl mt-8 mx-2 text-center">Well done! Your workout is complete!</p>
 	{:else}
@@ -229,11 +249,10 @@
 
 		{#if resting}
 			<p>Well done! Take a rest.</p>
-			<p class="text-center text-9xl">{timer}s</p>
-			<button
-				class="bg-red-400 disabled:bg-red-200 disabled:text-gray-400 p-1 rounded-sm"
-				onclick={skipRest}>Skip Rest</button
-			>
+			{@render timer()}
+			<button class="text-red-400 disabled:text-red-200" onclick={skipRest}>
+				<IconNext class="text-8xl" />
+			</button>
 		{:else}
 			<div class="my-4">
 				{#if currentStep.reps}
@@ -242,23 +261,25 @@
 					<p class="text-2xl">
 						Hold for <span class="font-bold">{currentStep.duration}</span> seconds!
 					</p>
-					<p class="text-center text-9xl">{timer}s</p>
+					{@render timer()}
 
 					<div class="flex flex-col items-center mt-2">
-						{#if !timerRunning && timer > 0}
-							<button class="bg-red-400 p-1 rounded-sm" onclick={() => startTimer()}>Start</button>
+						{#if !timerRunning && timerTicks > 0}
+							<button onclick={() => startTimer()}>
+								<IconPlay class="text-red-400 text-8xl" />
+							</button>
 						{:else}
-							<button class="bg-red-400 p-1 rounded-sm" onclick={stopTimer}>Stop</button>
+							<button onclick={stopTimer}>
+								<IconPause class="text-red-400 text-8xl" />
+							</button>
 						{/if}
 					</div>
 				{/if}
 			</div>
 
-			<button
-				disabled={timerRunning}
-				class="bg-red-400 disabled:bg-red-200 disabled:text-gray-400 p-1 rounded-sm"
-				onclick={nextStep}>Done</button
-			>
+			<button disabled={timerRunning} class="text-red-400 disabled:text-red-200" onclick={nextStep}>
+				<IconNext class="text-8xl" />
+			</button>
 		{/if}
 	{/if}
 </div>
