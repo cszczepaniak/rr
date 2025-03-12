@@ -2,6 +2,9 @@
 	import IconPlay from '~icons/mdi/play-circle';
 	import IconPause from '~icons/mdi/pause-circle';
 	import IconNext from '~icons/mdi/skip-next-circle';
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 
 	type Step = {
 		category: string;
@@ -148,8 +151,38 @@
 		),
 	];
 
-	let stepIndex = $state(0);
-	let currentStep = $derived(steps[stepIndex]);
+	function updateLocalStepIndex(index: number) {
+		if (index == -1) {
+			return;
+		}
+		if (browser) {
+			window.localStorage.setItem(`workout/${$page.params.id}`, String(index));
+		}
+	}
+
+	// Use -1 as a sentinel value so that we don't always overwrite localstorage to 0.
+	let stepIndex = $state(-1);
+	$effect(() => {
+		updateLocalStepIndex(stepIndex);
+	});
+
+	onMount(() => {
+		if (browser) {
+			const stepIndexStr = window.localStorage.getItem(`workout/${$page.params.id}`);
+			console.log('step index from local storage', stepIndexStr);
+			if (!stepIndexStr) {
+				stepIndex = 0;
+				updateLocalStepIndex(stepIndex);
+			} else {
+				stepIndex = Number(stepIndexStr);
+			}
+		}
+		console.log(`mounting ${$page.params.id} at step ${stepIndex}`);
+	});
+
+	// Because of our sentinel value above, we have to handle -1 gracefully (otherwise we'll get
+	// really angry trying to read from the array at -1)
+	let currentStep = $derived(stepIndex == -1 ? steps[0] : steps[stepIndex]);
 	let upcomingStep = $derived(stepIndex < steps.length - 1 ? steps[stepIndex + 1] : null);
 	let resting = $state(false);
 
@@ -172,7 +205,14 @@
 		}
 	}
 
-	function nextStep() {
+	async function nextStep() {
+		await fetch(`/api/workout/${$page.params.id}`, {
+			method: 'POST',
+			body: JSON.stringify({
+				index: stepIndex,
+			}),
+		});
+
 		if (upcomingStep === null) {
 			workoutFinished = true;
 			return;
