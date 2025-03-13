@@ -1,10 +1,7 @@
 import type { RequestHandler } from './$types';
 import { BlobNotFoundError, head, put } from "@vercel/blob";
 import { BLOB_READ_WRITE_TOKEN } from '$env/static/private'
-
-type PersistedWorkout = {
-	index: number,
-}
+import type { Workout } from '$lib/persistence/workout/workout';
 
 type PostRequest = {
 	index: number,
@@ -15,7 +12,7 @@ export const PUT: RequestHandler = async (req) => {
 
 
 	const blobName = `workouts/${req.params.id}.json`
-	const persisted: PersistedWorkout = { index: reqJSON.index };
+	const persisted: Workout = { id: req.params.id, index: reqJSON.index };
 	console.log("updating", blobName, "to", persisted);
 
 	try {
