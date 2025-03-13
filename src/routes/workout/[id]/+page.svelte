@@ -2,9 +2,10 @@
 	import IconPlay from '~icons/mdi/play-circle';
 	import IconPause from '~icons/mdi/pause-circle';
 	import IconNext from '~icons/mdi/skip-next-circle';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import { newTimer } from '$lib/timer/timer.svelte';
 
 	type Step = {
 		category: string;
@@ -156,7 +157,7 @@
 			return;
 		}
 		if (browser) {
-			window.localStorage.setItem(`workout/${$page.params.id}`, String(index));
+			window.localStorage.setItem(`workout/${page.params.id}`, String(index));
 		}
 	}
 
@@ -168,7 +169,7 @@
 
 	onMount(() => {
 		if (browser) {
-			const stepIndexStr = window.localStorage.getItem(`workout/${$page.params.id}`);
+			const stepIndexStr = window.localStorage.getItem(`workout/${page.params.id}`);
 			console.log('step index from local storage', stepIndexStr);
 			if (!stepIndexStr) {
 				stepIndex = 0;
@@ -177,7 +178,7 @@
 				stepIndex = Number(stepIndexStr);
 			}
 		}
-		console.log(`mounting ${$page.params.id} at step ${stepIndex}`);
+		console.log(`mounting ${page.params.id} at step ${stepIndex}`);
 	});
 
 	// Because of our sentinel value above, we have to handle -1 gracefully (otherwise we'll get
@@ -187,26 +188,24 @@
 	let resting = $state(false);
 
 	let countingDown = $state(false);
+	let countdownTimer = newTimer(3);
 
-	let timerHandle = $state(0);
-	let timerTicks = $state((steps[0].duration ?? 0) * 10);
-	let timerRunning = $state(false);
-	let timerSeconds = $derived(Math.floor(timerTicks / 10));
-	let timerFraction = $derived(timerTicks % 10);
+	let mainTimer = newTimer(steps[0].duration ?? 0);
 
 	let workoutFinished = $state(false);
 
 	function advance() {
-		stopTimer();
+		mainTimer.pause();
 		stepIndex++;
 		if (currentStep.duration) {
 			countingDown = true;
-			timerTicks = 30;
+			countdownTimer.resetTo(3);
 		}
 	}
 
 	async function nextStep() {
-		await fetch(`/api/workouts/${$page.params.id}`, {
+		console.log(page.params);
+		await fetch(`/api/workouts/${page.params.id}`, {
 			method: 'POST',
 			body: JSON.stringify({
 				index: stepIndex,
@@ -220,8 +219,8 @@
 
 		if (currentStep.restAfter) {
 			resting = true;
-			timerTicks = currentStep.restAfter * 10;
-			startTimer(() => {
+			mainTimer.resetTo(currentStep.restAfter);
+			mainTimer.start(() => {
 				resting = false;
 				advance();
 			});
@@ -236,44 +235,15 @@
 			return;
 		}
 
-		stopTimer();
+		mainTimer.pause();
 		resting = false;
 		advance();
 	}
-
-	function startTimer(onDone?: () => void) {
-		if (timerRunning) {
-			return;
-		}
-
-		timerRunning = true;
-
-		timerTicks--;
-
-		timerHandle = setInterval(() => {
-			timerTicks--;
-			if (timerTicks == 0) {
-				stopTimer();
-				if (onDone) {
-					onDone();
-				}
-			}
-		}, 100);
-	}
-
-	function stopTimer() {
-		if (!timerRunning) {
-			return;
-		}
-
-		timerRunning = false;
-		clearInterval(timerHandle);
-	}
 </script>
 
-{#snippet timer()}
+{#snippet timer(t: ReturnType<typeof newTimer>)}
 	<p class="text-right text-9xl">
-		<span>{timerSeconds}</span>.<span>{timerFraction}</span>s
+		<span>{t.seconds}</span>.<span>{t.fraction / 100}</span>s
 	</p>
 {/snippet}
 
@@ -287,7 +257,7 @@
 
 		{#if resting}
 			<p>Well done! Take a rest.</p>
-			{@render timer()}
+			{@render timer(mainTimer)}
 			<button class="text-red-400 disabled:text-red-200" onclick={skipRest}>
 				<IconNext class="text-8xl" />
 			</button>
@@ -298,14 +268,14 @@
 				{:else if currentStep.duration && countingDown}
 					<p class="text-2xl">
 						Get ready!
-						{@render timer()}
+						{@render timer(countdownTimer)}
 
 						<button
 							onclick={() =>
-								startTimer(() => {
+								countdownTimer.start(() => {
 									countingDown = false;
-									timerTicks = (currentStep.duration ?? 0) * 10;
-									startTimer();
+									mainTimer.resetTo(currentStep.duration ?? 0);
+									mainTimer.start();
 								})}
 						>
 							<IconPlay class="text-red-400 text-8xl" />
@@ -315,15 +285,15 @@
 					<p class="text-2xl">
 						Hold for <span class="font-bold">{currentStep.duration}</span> seconds!
 					</p>
-					{@render timer()}
+					{@render timer(mainTimer)}
 
 					<div class="flex flex-col items-center mt-2">
-						{#if !timerRunning && timerTicks > 0}
-							<button onclick={() => startTimer()}>
+						{#if !mainTimer.running && !mainTimer.elapsed}
+							<button onclick={() => mainTimer.start()}>
 								<IconPlay class="text-red-400 text-8xl" />
 							</button>
 						{:else}
-							<button onclick={stopTimer}>
+							<button onclick={mainTimer.pause}>
 								<IconPause class="text-red-400 text-8xl" />
 							</button>
 						{/if}
@@ -331,7 +301,11 @@
 				{/if}
 			</div>
 
-			<button disabled={timerRunning} class="text-red-400 disabled:text-red-200" onclick={nextStep}>
+			<button
+				disabled={mainTimer.running}
+				class="text-red-400 disabled:text-red-200"
+				onclick={nextStep}
+			>
 				<IconNext class="text-8xl" />
 			</button>
 		{/if}
