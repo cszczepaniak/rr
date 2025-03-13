@@ -152,7 +152,7 @@
 		),
 	];
 
-	let stepIndex = $state(data.workout.index ?? 0);
+	let stepIndex = $state(Math.min(data.workout.index, steps.length - 1));
 	let currentStep = $derived(steps[stepIndex]);
 	let upcomingStep = $derived(stepIndex < steps.length - 1 ? steps[stepIndex + 1] : null);
 	let resting = $state(false);
@@ -162,7 +162,7 @@
 
 	let mainTimer = newTimer(steps[0].duration ?? 0);
 
-	let workoutFinished = $state(false);
+	let workoutFinished = $state(data.workout.index >= steps.length);
 
 	async function advance() {
 		mainTimer.pause();
