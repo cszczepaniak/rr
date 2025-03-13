@@ -3,9 +3,9 @@
 	import IconPause from '~icons/mdi/pause-circle';
 	import IconNext from '~icons/mdi/skip-next-circle';
 	import { page } from '$app/state';
-	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import { newTimer } from '$lib/timer/timer.svelte';
+
+	let { data } = $props();
 
 	type Step = {
 		category: string;
@@ -152,38 +152,8 @@
 		),
 	];
 
-	function updateLocalStepIndex(index: number) {
-		if (index == -1) {
-			return;
-		}
-		if (browser) {
-			window.localStorage.setItem(`workout/${page.params.id}`, String(index));
-		}
-	}
-
-	// Use -1 as a sentinel value so that we don't always overwrite localstorage to 0.
-	let stepIndex = $state(-1);
-	$effect(() => {
-		updateLocalStepIndex(stepIndex);
-	});
-
-	onMount(() => {
-		if (browser) {
-			const stepIndexStr = window.localStorage.getItem(`workout/${page.params.id}`);
-			console.log('step index from local storage', stepIndexStr);
-			if (!stepIndexStr) {
-				stepIndex = 0;
-				updateLocalStepIndex(stepIndex);
-			} else {
-				stepIndex = Number(stepIndexStr);
-			}
-		}
-		console.log(`mounting ${page.params.id} at step ${stepIndex}`);
-	});
-
-	// Because of our sentinel value above, we have to handle -1 gracefully (otherwise we'll get
-	// really angry trying to read from the array at -1)
-	let currentStep = $derived(stepIndex == -1 ? steps[0] : steps[stepIndex]);
+	let stepIndex = $state(data.workout.index ?? 0);
+	let currentStep = $derived(steps[stepIndex]);
 	let upcomingStep = $derived(stepIndex < steps.length - 1 ? steps[stepIndex + 1] : null);
 	let resting = $state(false);
 
@@ -194,24 +164,23 @@
 
 	let workoutFinished = $state(false);
 
-	function advance() {
+	async function advance() {
 		mainTimer.pause();
 		stepIndex++;
 		if (currentStep.duration) {
 			countingDown = true;
 			countdownTimer.resetTo(3);
 		}
-	}
 
-	async function nextStep() {
-		console.log(page.params);
 		await fetch(`/api/workouts/${page.params.id}`, {
-			method: 'POST',
+			method: 'PUT',
 			body: JSON.stringify({
 				index: stepIndex,
 			}),
 		});
+	}
 
+	async function nextStep() {
 		if (upcomingStep === null) {
 			workoutFinished = true;
 			return;
@@ -220,24 +189,24 @@
 		if (currentStep.restAfter) {
 			resting = true;
 			mainTimer.resetTo(currentStep.restAfter);
-			mainTimer.start(() => {
+			mainTimer.start(async () => {
 				resting = false;
-				advance();
+				await advance();
 			});
 			return;
 		}
 
-		advance();
+		await advance();
 	}
 
-	function skipRest() {
+	async function skipRest() {
 		if (!resting) {
 			return;
 		}
 
 		mainTimer.pause();
 		resting = false;
-		advance();
+		await advance();
 	}
 </script>
 
