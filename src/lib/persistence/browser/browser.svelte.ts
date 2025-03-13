@@ -14,3 +14,9 @@ export function getCurrentWorkout(): string | null {
 	}
 	return null;
 }
+
+export function clearCurrentWorkout() {
+	if (browser) {
+		window.localStorage.removeItem(currentWorkoutKey);
+	}
+}

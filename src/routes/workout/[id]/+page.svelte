@@ -4,6 +4,8 @@
 	import IconNext from '~icons/mdi/skip-next-circle';
 	import { page } from '$app/state';
 	import { newTimer } from '$lib/timer/timer.svelte';
+	import { clearCurrentWorkout } from '$lib/persistence/browser/browser.svelte';
+	import { goto } from '$app/navigation';
 
 	let { data } = $props();
 
@@ -163,6 +165,11 @@
 	let mainTimer = newTimer(steps[0].duration ?? 0);
 
 	let workoutFinished = $state(data.workout.index >= steps.length);
+	$effect(() => {
+		if (workoutFinished) {
+			clearCurrentWorkout();
+		}
+	});
 
 	async function advance() {
 		mainTimer.pause();
