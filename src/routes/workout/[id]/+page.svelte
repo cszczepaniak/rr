@@ -81,64 +81,67 @@
 <div class="flex flex-col text-center items-center">
 	{#if workoutFinished}
 		<p class="text-7xl mt-8 mx-2 text-center">Well done! Your workout is complete!</p>
+	{:else if resting}
+		<h1 class="text-7xl mt-8 mx-2 text-center">Well done! Take a rest.</h1>
+		{#if upcomingStep}
+			<h3 class="mt-8">Next movement:</h3>
+			<h3 class="text-3xl">{upcomingStep.name}</h3>
+		{/if}
+
+		{@render timer(mainTimer)}
+		<button class="text-red-400 disabled:text-red-200" onclick={skipRest}>
+			<IconNext class="text-8xl" />
+		</button>
 	{:else}
 		<h1 class="text-7xl mt-8 mx-2 text-center">{currentStep.category}</h1>
 		<h3 class="mt-8">Current movement:</h3>
 		<h3 class="text-3xl">{currentStep.name}</h3>
 
-		{#if resting}
-			<p>Well done! Take a rest.</p>
-			{@render timer(mainTimer)}
-			<button class="text-red-400 disabled:text-red-200" onclick={skipRest}>
-				<IconNext class="text-8xl" />
-			</button>
-		{:else}
-			<div class="my-4">
-				{#if currentStep.reps}
-					<p class="text-2xl">Do <span class="font-bold">{currentStep.reps}</span> reps!</p>
-				{:else if currentStep.duration && countingDown}
-					<p class="text-2xl">
-						Get ready!
-						{@render timer(countdownTimer)}
+		<div class="my-4">
+			{#if currentStep.reps}
+				<p class="text-2xl">Do <span class="font-bold">{currentStep.reps}</span> reps!</p>
+			{:else if currentStep.duration && countingDown}
+				<p class="text-2xl">
+					Get ready!
+					{@render timer(countdownTimer)}
 
-						<button
-							onclick={() =>
-								countdownTimer.start(() => {
-									countingDown = false;
-									mainTimer.resetTo(currentStep.duration ?? 0);
-									mainTimer.start();
-								})}
-						>
+					<button
+						onclick={() =>
+							countdownTimer.start(() => {
+								countingDown = false;
+								mainTimer.resetTo(currentStep.duration ?? 0);
+								mainTimer.start();
+							})}
+					>
+						<IconPlay class="text-red-400 text-8xl" />
+					</button>
+				</p>
+			{:else if currentStep.duration && !countingDown}
+				<p class="text-2xl">
+					Hold for <span class="font-bold">{currentStep.duration}</span> seconds!
+				</p>
+				{@render timer(mainTimer)}
+
+				<div class="flex flex-col items-center mt-2">
+					{#if !mainTimer.running && !mainTimer.elapsed}
+						<button onclick={() => mainTimer.start()}>
 							<IconPlay class="text-red-400 text-8xl" />
 						</button>
-					</p>
-				{:else if currentStep.duration && !countingDown}
-					<p class="text-2xl">
-						Hold for <span class="font-bold">{currentStep.duration}</span> seconds!
-					</p>
-					{@render timer(mainTimer)}
+					{:else}
+						<button onclick={mainTimer.pause}>
+							<IconPause class="text-red-400 text-8xl" />
+						</button>
+					{/if}
+				</div>
+			{/if}
+		</div>
 
-					<div class="flex flex-col items-center mt-2">
-						{#if !mainTimer.running && !mainTimer.elapsed}
-							<button onclick={() => mainTimer.start()}>
-								<IconPlay class="text-red-400 text-8xl" />
-							</button>
-						{:else}
-							<button onclick={mainTimer.pause}>
-								<IconPause class="text-red-400 text-8xl" />
-							</button>
-						{/if}
-					</div>
-				{/if}
-			</div>
-
-			<button
-				disabled={mainTimer.running}
-				class="text-red-400 disabled:text-red-200"
-				onclick={nextStep}
-			>
-				<IconNext class="text-8xl" />
-			</button>
-		{/if}
+		<button
+			disabled={mainTimer.running}
+			class="text-red-400 disabled:text-red-200"
+			onclick={nextStep}
+		>
+			<IconNext class="text-8xl" />
+		</button>
 	{/if}
 </div>
