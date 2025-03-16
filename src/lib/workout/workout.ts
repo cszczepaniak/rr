@@ -1,10 +1,118 @@
-export type Step = {
+type Progression = {
 	category: string;
+	exercises: Step[];
+}
+
+type Step = {
 	name: string;
 	reps?: number;
 	duration?: number;
 	restAfter?: number;
 };
+
+export const progressions: Progression[] = [
+	{
+		category: 'Warmup',
+		exercises: [
+			{
+				name: 'Shoulder Circles',
+				reps: 10,
+			},
+		],
+	},
+	{
+		category: 'Warmup',
+		exercises: [
+			{
+				name: 'Scapular Shrugs',
+				reps: 10,
+			},
+		],
+	},
+	{
+		category: 'Warmup',
+		exercises: [
+			{
+				name: 'Cat/Camel',
+				reps: 10,
+			},
+		],
+	},
+	{
+		category: 'Warmup',
+		exercises: [
+			{
+				name: 'Band Pulldowns',
+				reps: 10,
+			},
+		],
+	},
+	{
+		category: 'Warmup',
+		exercises: [
+			{
+				name: 'Band Dislocates',
+				reps: 10,
+			},
+		],
+	},
+	{
+		category: 'Warmup',
+		exercises: [
+			{
+				name: 'Wrist Mobility',
+			},
+		],
+	},
+	{
+		category: 'Warmup',
+		exercises: [
+			{
+				name: 'Hamstring Stretch (1 of 2)',
+				duration: 30,
+			},
+		],
+	},
+	{
+		category: 'Warmup',
+		exercises: [
+			{
+				name: 'Hamstring Stretch (2 of 2)',
+				duration: 30,
+			},
+		],
+	},
+	{
+		category: 'Skill Work',
+		exercises: [
+			{
+				name: 'Parallel Bar Support',
+				duration: 30,
+			},
+			{
+				name: 'Ring Support',
+				duration: 30,
+			},
+			{
+				name: 'Ring RTO Support',
+				duration: 30,
+			},
+		],
+	},
+	{
+		category: 'Skill Work',
+		exercises: [
+			{
+				name: 'Wall Handstand',
+				duration: 30,
+			},
+			{
+				name: 'Handstand',
+				duration: 30,
+			},
+		],
+	},
+]
 
 function repeat(s: Step[], times: number): Step[] {
 	const result: Step[] = [];
