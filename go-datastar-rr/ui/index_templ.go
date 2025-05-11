@@ -8,11 +8,6 @@ package ui
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"datastar/rr/ui/components"
-	"time"
-)
-
 func Index2() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -34,19 +29,7 @@ func Index2() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0\"><link href=\"/web/output.css\" rel=\"stylesheet\"><script type=\"module\" src=\"https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js\"></script></head><body><div class=\"flex flex-col max-w-md mx-auto my-16 gap-y-8 text-center\"><h1 class=\"text-7xl\">Recommended Routine</h1><form action=\"/workouts\" method=\"POST\"><button class=\"text-3xl py-4 px-8 bg-blue-300 rounded-md\">Start a Workout</button></form>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = components.Timer(components.TimerProps{
-			Duration:  time.Second,
-			CountIn:   3 * time.Second,
-			AutoStart: false,
-		}).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0\"><link href=\"/web/output.css\" rel=\"stylesheet\"><script type=\"module\" src=\"https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js\"></script></head><body><div class=\"flex flex-col max-w-md mx-auto my-16 gap-y-8 text-center\"><h1 class=\"text-7xl\">Recommended Routine</h1><form action=\"/workouts\" method=\"POST\"><button class=\"text-3xl py-4 px-8 bg-blue-300 rounded-md\">Start a Workout</button></form></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
