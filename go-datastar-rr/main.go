@@ -19,7 +19,10 @@ func main() {
 	if os.Getenv("RAILWAY_SERVICE_ID") != "" {
 		// If deployed, use the embedded filesystem; we don't do this for development because it's
 		// easier to get live updates from the actual directory.
-		mux.Handle("GET /web/", http.StripPrefix("/web", http.FileServer(http.FS(webFS))))
+		//
+		// We don't need to strip the prefix because the embed.FS is relative to the root
+		// directory.
+		mux.Handle("GET /web/", http.FileServer(http.FS(webFS)))
 	} else {
 		mux.Handle("GET /web/", http.StripPrefix("/web", http.FileServer(http.Dir("web"))))
 	}
