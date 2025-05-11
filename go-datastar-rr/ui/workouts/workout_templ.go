@@ -107,7 +107,7 @@ func body(data ViewData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.Timer2(
+			templ_7745c5c3_Err = components.Timer(
 				components.TimerProps{
 					Duration:  data.RestDuration,
 					AutoStart: true,
@@ -153,7 +153,7 @@ func body(data ViewData) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = components.Timer2(
+				templ_7745c5c3_Err = components.Timer(
 					components.TimerProps{
 						CountIn:  3 * time.Second,
 						Duration: data.CurrentMovement.Dur,

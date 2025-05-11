@@ -8,9 +8,7 @@ package components
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "cmp"
-
-func Timer2(
+func Timer(
 	props TimerProps,
 ) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -40,92 +38,13 @@ func Timer2(
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(props.FormatSignalsJSON())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/components/timer.templ`, Line: 11, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/components/timer.templ`, Line: 9, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"><span id=\"time\" class=\"text-center text-7xl\" data-text=\"`${Math.floor($ticks/10)}.${Math.floor($ticks%10)}`\" data-on-load=\"\n\t\t\t\tonLoad = () =&gt; {\n\t\t\t\t\tif (!$autoStart) {\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\t\t\t\t\tclearAndStop = () =&gt; {\n\t\t\t\t\t\tif ($countingIn) {\n\t\t\t\t\t\t\t$countingIn = false;\n\t\t\t\t\t\t\t$ticks = $timerTicks;\n\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\twindow.clearInterval($interval);\n\t\t\t\t\t\t\t$started = false;\n\t\t\t\t\t\t\t$done = true;\n\t\t\t\t\t\t}\n\t\t\t\t\t};\n\t\t\t\t\tonTick = () =&gt; {\n\t\t\t\t\t\t$ticks--;\n\t\t\t\t\t\tif ($ticks === 0) {\n\t\t\t\t\t\t\tclearAndStop();\n\t\t\t\t\t\t}\n\t\t\t\t\t};\n\t\t\t\t\t$started = true;\n\t\t\t\t\tonTick();\n\t\t\t\t\t$interval = window.setInterval(onTick, 100)\n\t\t\t\t};\n\t\t\t\tonLoad();\n\t\t\t\"></span> <button id=\"start\" class=\"rounded-md bg-blue-200 disabled:bg-blue-100 cursor-pointer disabled:cursor-auto\" data-on-click=\"\n\t\t\t\tclearAndStop = () =&gt; {\n\t\t\t\t\tif ($countingIn) {\n\t\t\t\t\t\t$countingIn = false;\n\t\t\t\t\t\t$ticks = $timerTicks;\n\t\t\t\t\t} else {\n\t\t\t\t\t\twindow.clearInterval($interval);\n\t\t\t\t\t\t$started = false;\n\t\t\t\t\t\t$done = true;\n\t\t\t\t\t}\n\t\t\t\t};\n\t\t\t\tonTick = () =&gt; {\n\t\t\t\t\t$ticks--;\n\t\t\t\t\tif ($ticks === 0) {\n\t\t\t\t\t\tclearAndStop();\n\t\t\t\t\t}\n\t\t\t\t};\n\t\t\t\t$started = true;\n\t\t\t\tonTick();\n\t\t\t\t$interval = window.setInterval(onTick, 100)\n\t\t\t\" data-show=\"!$started &amp;&amp; !$done\">Start</button> <button id=\"stop\" class=\"rounded-md bg-blue-200 cursor-pointer\" data-on-click=\"\n\t\t\t\t$started = false;\n\t\t\t\twindow.clearInterval($interval);\n\t\t\t\" data-show=\"$started &amp;&amp; !$done\">Stop</button></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		return nil
-	})
-}
-
-func Timer(
-	props TimerProps,
-) templ.Component {
-	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
-			return templ_7745c5c3_CtxErr
-		}
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-		if !templ_7745c5c3_IsBuffer {
-			defer func() {
-				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err == nil {
-					templ_7745c5c3_Err = templ_7745c5c3_BufErr
-				}
-			}()
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var3 == nil {
-			templ_7745c5c3_Var3 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"timer\" class=\"flex flex-col gap-y-4\"><span id=\"time\" class=\"text-center text-7xl\"></span> <button id=\"start\" class=\"border rounded-md bg-blue-200 disabled:bg-blue-100 cursor-pointer disabled:cursor-auto\" onclick=\"startClick()\">Start</button> <button id=\"stop\" class=\"border rounded-md bg-blue-200 cursor-pointer hidden\" onclick=\"stopClick()\">Stop</button><script id=\"timer-script\">\n\t\t\tfunction runTimer() {\n\t\t\t\tvar ticks = ")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var4, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(durToTicks(cmp.Or(props.CountIn, props.Duration)))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/components/timer.templ`, Line: 108, Col: 68}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, ";\n\t\t\t\tvar ticker = null;\n\n\t\t\t\tfunction updateTicks() {\n\t\t\t\t\tdocument.getElementById(\"time\").textContent = `${Math.floor(ticks/10)}.${Math.floor(ticks%10)}`;\n\t\t\t\t}\n\n\t\t\t\tupdateTicks();\n\n\t\t\t\tif (")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var5, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(props.AutoStart)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/components/timer.templ`, Line: 117, Col: 26}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, ") {\n\t\t\t\t\tstartTimer();\n\t\t\t\t}\n\n\n\t\t\t\tfunction startTimer(onDone) {\n\t\t\t\t\tconsole.log(`starting timer; ticks: ${ticks}; ticker ${ticker}`);\n\t\t\t\t\tconst onInterval = () => {\n\t\t\t\t\t\tticks--;\n\t\t\t\t\t\tupdateTicks();\n\t\t\t\t\t\tif (ticks === 0) {\n\t\t\t\t\t\t\twindow.clearInterval(ticker);\n\t\t\t\t\t\t\tticker = null;\n\t\t\t\t\t\t\tif (onDone) {\n\t\t\t\t\t\t\t\tonDone()\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t// document.getElementById(\"start\").classList.toggle(\"hidden\")\n\t\t\t\t\t\t\t\tdocument.getElementById(\"stop\").classList.toggle(\"hidden\")\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\treturn\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tonInterval();\n\t\t\t\t\tticker = window.setInterval(onInterval, 100)\n\t\t\t\t\tdocument.getElementById(\"start\").classList.toggle(\"hidden\")\n\t\t\t\t\tdocument.getElementById(\"stop\").classList.toggle(\"hidden\")\n\t\t\t\t}\n\n\t\t\t\tfunction stopTimer() {\n\t\t\t\t\twindow.clearInterval(ticker);\n\t\t\t\t\tdocument.getElementById(\"start\").classList.toggle(\"hidden\")\n\t\t\t\t\tdocument.getElementById(\"stop\").classList.toggle(\"hidden\")\n\t\t\t\t}\n\n\t\t\t\tfunction resetTo(ts) {\n\t\t\t\t\tticks = ts;\n\t\t\t\t\tupdateTicks();\n\t\t\t\t\tdocument.getElementById(\"start\").classList.remove(\"hidden\")\n\t\t\t\t\tdocument.getElementById(\"stop\").classList.add(\"hidden\")\n\n\t\t\t\t\tstartTimer();\n\t\t\t\t}\n\n\n\t\t\t\tif (")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var6, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(props.CountIn > 0)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/components/timer.templ`, Line: 161, Col: 28}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, ") {\n\t\t\t\t\tvar startClick = () => startTimer(() => resetTo(")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var7, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(durToTicks(props.Duration))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/components/timer.templ`, Line: 162, Col: 82}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "));\n\t\t\t\t} else {\n\t\t\t\t\tvar startClick = startTimer;\n\t\t\t\t}\n\t\t\t\tvar stopClick = stopTimer;\n\n\t\t\t\treturn { startClick, stopClick }\n\t\t\t};\n\t\t\tvar { startClick, stopClick } = runTimer();\n\t\t</script></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

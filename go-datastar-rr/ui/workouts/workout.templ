@@ -26,7 +26,7 @@ templ body(data ViewData) {
 		<h2 class="text-5xl">{ data.CurrentMovement.Name }</h2>
 		if data.IsResting {
 			<p class="text-xl font-semibold italic">Well done! Take a rest.</p>
-			@components.Timer2(
+			@components.Timer(
 				components.TimerProps{
 					Duration:  data.RestDuration,
 					AutoStart: true,
@@ -37,7 +37,7 @@ templ body(data ViewData) {
 					<p class="text-xl font-semibold italic">Do { data.CurrentMovement.Reps } reps!</p>
 				case data.CurrentMovement.Dur != 0:
 					<p class="text-xl font-semibold italic">Hold for { data.CurrentMovement.Dur }!</p>
-					@components.Timer2(
+					@components.Timer(
 						components.TimerProps{
 							CountIn:  3 * time.Second,
 							Duration: data.CurrentMovement.Dur,

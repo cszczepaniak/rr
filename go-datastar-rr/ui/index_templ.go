@@ -38,7 +38,7 @@ func Index2() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Timer2(components.TimerProps{
+		templ_7745c5c3_Err = components.Timer(components.TimerProps{
 			Duration:  time.Second,
 			CountIn:   3 * time.Second,
 			AutoStart: false,

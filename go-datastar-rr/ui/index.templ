@@ -19,7 +19,7 @@ templ Index2() {
 				<form action="/workouts" method="POST">
 					<button class="text-3xl py-4 px-8 bg-blue-300 rounded-md">Start a Workout</button>
 				</form>
-				@components.Timer2(components.TimerProps{
+				@components.Timer(components.TimerProps{
 					Duration:  time.Second,
 					CountIn:   3 * time.Second,
 					AutoStart: false,
