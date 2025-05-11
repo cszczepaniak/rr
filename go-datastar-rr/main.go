@@ -3,30 +3,29 @@ package main
 import (
 	workoutservice "datastar/rr/service/workouts"
 	"datastar/rr/ui"
-	"datastar/rr/ui/components"
 	"datastar/rr/ui/workouts"
+	"embed"
 	"log/slog"
 	"net/http"
-	"time"
+	"os"
 )
+
+//go:embed web/*
+var webFS embed.FS
 
 func main() {
 	mux := http.NewServeMux()
 
-	mux.Handle("GET /web/", http.StripPrefix("/web", http.FileServer(http.Dir("web"))))
+	if os.Getenv("RAILWAY_SERVICE_ID") != "" {
+		// If deployed, use the embedded filesystem; we don't do this for development because it's
+		// easier to get live updates from the actual directory.
+		mux.Handle("GET /web/", http.StripPrefix("/web", http.FileServer(http.FS(webFS))))
+	} else {
+		mux.Handle("GET /web/", http.StripPrefix("/web", http.FileServer(http.Dir("web"))))
+	}
 
 	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
 		err := ui.Index2().Render(r.Context(), w)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	})
-	mux.HandleFunc("GET /timer", func(w http.ResponseWriter, r *http.Request) {
-		err := components.Timer(components.TimerProps{
-			Duration: 5 * time.Second,
-			CountIn:  2 * time.Second,
-		}).Render(r.Context(), w)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
