@@ -23,8 +23,10 @@ func main() {
 		// We don't need to strip the prefix because the embed.FS is relative to the root
 		// directory.
 		mux.Handle("GET /web/", http.FileServer(http.FS(webFS)))
+		slog.Info("serving embedded static assets")
 	} else {
 		mux.Handle("GET /web/", http.StripPrefix("/web", http.FileServer(http.Dir("web"))))
+		slog.Info("serving static assets from local file system")
 	}
 
 	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
