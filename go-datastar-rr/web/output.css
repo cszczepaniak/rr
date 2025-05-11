@@ -10,6 +10,12 @@
     --color-blue-100: oklch(93.2% 0.032 255.585);
     --color-blue-200: oklch(88.2% 0.059 254.128);
     --color-blue-300: oklch(80.9% 0.105 251.813);
+    --color-blue-800: oklch(42.4% 0.199 265.638);
+    --color-blue-900: oklch(37.9% 0.146 265.522);
+    --color-slate-600: oklch(44.6% 0.043 257.281);
+    --color-slate-700: oklch(37.2% 0.044 257.287);
+    --color-slate-800: oklch(27.9% 0.041 260.031);
+    --color-white: #fff;
     --spacing: 0.25rem;
     --container-md: 28rem;
     --text-xl: 1.25rem;
@@ -196,11 +202,20 @@
   .inline {
     display: inline;
   }
+  .inline-block {
+    display: inline-block;
+  }
   .table {
     display: table;
   }
+  .aspect-square {
+    aspect-ratio: 1 / 1;
+  }
   .min-h-screen {
     min-height: 100vh;
+  }
+  .w-fit {
+    width: fit-content;
   }
   .max-w-md {
     max-width: var(--container-md);
@@ -219,6 +234,9 @@
   }
   .flex-col {
     flex-direction: column;
+  }
+  .items-center {
+    align-items: center;
   }
   .justify-between {
     justify-content: space-between;
@@ -239,6 +257,9 @@
   .gap-y-8 {
     row-gap: calc(var(--spacing) * 8);
   }
+  .rounded-full {
+    border-radius: calc(infinity * 1px);
+  }
   .rounded-md {
     border-radius: var(--radius-md);
   }
@@ -254,6 +275,12 @@
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
+  }
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
+  }
+  .p-8 {
+    padding: calc(var(--spacing) * 8);
   }
   .px-2 {
     padding-inline: calc(var(--spacing) * 2);
@@ -292,6 +319,24 @@
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
+  }
+  .text-blue-800 {
+    color: var(--color-blue-800);
+  }
+  .text-blue-900 {
+    color: var(--color-blue-900);
+  }
+  .text-slate-600 {
+    color: var(--color-slate-600);
+  }
+  .text-slate-700 {
+    color: var(--color-slate-700);
+  }
+  .text-slate-800 {
+    color: var(--color-slate-800);
+  }
+  .text-white {
+    color: var(--color-white);
   }
   .italic {
     font-style: italic;
