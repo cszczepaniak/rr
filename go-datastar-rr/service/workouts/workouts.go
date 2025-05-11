@@ -95,8 +95,8 @@ func newDefaultWorkout() Workout {
 			iterOf(newReps("Warmup", "Band Pulldowns", 10)),
 			iterOf(newReps("Warmup", "Band Dislocates", 10)),
 			iterOf(newReps("Warmup", "Wrist Mobility", 1)),
-			iterOf(newHold("Warmup", "Hamstring Strectch (1 of 2)", 3*time.Second)),
-			iterOf(newHold("Warmup", "Hamstring Strectch (2 of 2)", 3*time.Second)),
+			iterOf(newHold("Warmup", "Hamstring Stretch (1 of 2)", 30*time.Second)),
+			iterOf(newHold("Warmup", "Hamstring Stretch (2 of 2)", 30*time.Second)),
 			repeat(3,
 				newWithRest(
 					newHold("Skill Work", "Parallel Bar Support", 30*time.Second),
