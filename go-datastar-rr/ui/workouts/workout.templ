@@ -1,0 +1,52 @@
+package workouts
+
+import (
+	"datastar/rr/ui/components"
+	"fmt"
+	"time"
+)
+
+templ Workout(data ViewData) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+			<link href="/web/output.css" rel="stylesheet"/>
+			<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"></script>
+		</head>
+		<body>
+			@body(data)
+		</body>
+	</html>
+}
+
+templ body(data ViewData) {
+	<div id="workout" class="flex flex-col gap-y-8 max-w-md mx-auto text-center">
+		<h1 class="text-7xl">{ data.CurrentMovement.Category }</h1>
+		<h2 class="text-5xl">{ data.CurrentMovement.Name }</h2>
+		if data.IsResting {
+			<p class="text-xl font-semibold italic">Well done! Take a rest.</p>
+			@components.Timer2(
+				components.TimerProps{
+					Duration:  data.RestDuration,
+					AutoStart: true,
+				})
+		} else {
+			switch  {
+				case data.CurrentMovement.Reps != 0:
+					<p class="text-xl font-semibold italic">Do { data.CurrentMovement.Reps } reps!</p>
+				case data.CurrentMovement.Dur != 0:
+					<p class="text-xl font-semibold italic">Hold for { data.CurrentMovement.Dur }!</p>
+					@components.Timer2(
+						components.TimerProps{
+							CountIn:  3 * time.Second,
+							Duration: data.CurrentMovement.Dur,
+						})
+			}
+		}
+		<button
+			data-on-click={ fmt.Sprintf("@post('/workouts/%s/advance')", data.WorkoutID) }
+			class="bg-blue-200 rounded-md text-xl py-4 px-4 hover:cursor-pointer"
+		>Next</button>
+	</div>
+}

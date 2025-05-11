@@ -1,0 +1,173 @@
+package components
+
+import "cmp"
+
+templ Timer2(
+	props TimerProps,
+) {
+	<div
+		id="timer"
+		class="flex flex-col gap-y-4"
+		data-signals={ props.FormatSignalsJSON() }
+	>
+		<span
+			id="time"
+			class="text-center text-7xl"
+			data-text="`${Math.floor($ticks/10)}.${Math.floor($ticks%10)}`"
+			data-on-load="
+				onLoad = () => {
+					if (!$autoStart) {
+						return;
+					}
+					clearAndStop = () => {
+						if ($countingIn) {
+							$countingIn = false;
+							$ticks = $timerTicks;
+						} else {
+							window.clearInterval($interval);
+							$started = false;
+							$done = true;
+						}
+					};
+					onTick = () => {
+						$ticks--;
+						if ($ticks === 0) {
+							clearAndStop();
+						}
+					};
+					$started = true;
+					onTick();
+					$interval = window.setInterval(onTick, 100)
+				};
+				onLoad();
+			"
+		></span>
+		<button
+			id="start"
+			class="rounded-md bg-blue-200 disabled:bg-blue-100 cursor-pointer disabled:cursor-auto"
+			data-on-click="
+				clearAndStop = () => {
+					if ($countingIn) {
+						$countingIn = false;
+						$ticks = $timerTicks;
+					} else {
+						window.clearInterval($interval);
+						$started = false;
+						$done = true;
+					}
+				};
+				onTick = () => {
+					$ticks--;
+					if ($ticks === 0) {
+						clearAndStop();
+					}
+				};
+				$started = true;
+				onTick();
+				$interval = window.setInterval(onTick, 100)
+			"
+			data-show="!$started && !$done"
+		>
+			Start
+		</button>
+		<button
+			id="stop"
+			class="rounded-md bg-blue-200 cursor-pointer"
+			data-on-click="
+				$started = false;
+				window.clearInterval($interval);
+			"
+			data-show="$started && !$done"
+		>
+			Stop
+		</button>
+	</div>
+}
+
+templ Timer(
+	props TimerProps,
+) {
+	<div id="timer" class="flex flex-col gap-y-4">
+		<span id="time" class="text-center text-7xl"></span>
+		<button
+			id="start"
+			class="border rounded-md bg-blue-200 disabled:bg-blue-100 cursor-pointer disabled:cursor-auto"
+			onclick="startClick()"
+		>
+			Start
+		</button>
+		<button
+			id="stop"
+			class="border rounded-md bg-blue-200 cursor-pointer hidden"
+			onclick="stopClick()"
+		>
+			Stop
+		</button>
+		<script id="timer-script">
+			function runTimer() {
+				var ticks = {{ durToTicks(cmp.Or(props.CountIn, props.Duration)) }};
+				var ticker = null;
+
+				function updateTicks() {
+					document.getElementById("time").textContent = `${Math.floor(ticks/10)}.${Math.floor(ticks%10)}`;
+				}
+
+				updateTicks();
+
+				if ({{ props.AutoStart }}) {
+					startTimer();
+				}
+
+
+				function startTimer(onDone) {
+					console.log(`starting timer; ticks: ${ticks}; ticker ${ticker}`);
+					const onInterval = () => {
+						ticks--;
+						updateTicks();
+						if (ticks === 0) {
+							window.clearInterval(ticker);
+							ticker = null;
+							if (onDone) {
+								onDone()
+							} else {
+								// document.getElementById("start").classList.toggle("hidden")
+								document.getElementById("stop").classList.toggle("hidden")
+							}
+							return
+						}
+					}
+					onInterval();
+					ticker = window.setInterval(onInterval, 100)
+					document.getElementById("start").classList.toggle("hidden")
+					document.getElementById("stop").classList.toggle("hidden")
+				}
+
+				function stopTimer() {
+					window.clearInterval(ticker);
+					document.getElementById("start").classList.toggle("hidden")
+					document.getElementById("stop").classList.toggle("hidden")
+				}
+
+				function resetTo(ts) {
+					ticks = ts;
+					updateTicks();
+					document.getElementById("start").classList.remove("hidden")
+					document.getElementById("stop").classList.add("hidden")
+
+					startTimer();
+				}
+
+
+				if ({{ props.CountIn > 0 }}) {
+					var startClick = () => startTimer(() => resetTo({{ durToTicks(props.Duration) }}));
+				} else {
+					var startClick = startTimer;
+				}
+				var stopClick = stopTimer;
+
+				return { startClick, stopClick }
+			};
+			var { startClick, stopClick } = runTimer();
+		</script>
+	</div>
+}
