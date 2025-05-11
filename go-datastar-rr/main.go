@@ -28,7 +28,7 @@ func main() {
 	}
 
 	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
-		err := ui.Index2().Render(r.Context(), w)
+		err := ui.Index().Render(r.Context(), w)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
