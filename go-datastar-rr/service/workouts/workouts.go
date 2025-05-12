@@ -28,7 +28,7 @@ func (b stageBase) Name() string {
 
 type Reps struct {
 	stageBase
-	Reps int
+	Reps int `json:"reps"`
 }
 
 func newReps(c, n string, reps int) Reps {
@@ -43,7 +43,7 @@ func newReps(c, n string, reps int) Reps {
 
 type Hold struct {
 	stageBase
-	Duration time.Duration
+	Duration time.Duration `json:"dur"`
 }
 
 func newHold(c, n string, dur time.Duration) Hold {
@@ -57,13 +57,16 @@ func newHold(c, n string, dur time.Duration) Hold {
 }
 
 type Rest struct {
-	Stage
-	Duration time.Duration
+	stageBase
+	Duration time.Duration `json:"dur"`
 }
 
 func newRest(from Stage, dur time.Duration) Rest {
 	return Rest{
-		Stage:    from,
+		stageBase: stageBase{
+			category: from.Category(),
+			name:     from.Name(),
+		},
 		Duration: dur,
 	}
 }
@@ -81,8 +84,9 @@ type End struct {
 }
 
 type Workout struct {
-	ID     string
-	Stages []Stage
+	ID           string  `json:"id"`
+	Stages       []Stage `json:"stages"`
+	CurrentStage int     `json:"current_stage"`
 }
 
 func newDefaultWorkout() Workout {
