@@ -91,6 +91,15 @@ type Workout struct {
 	CurrentStage int    `json:"current_stage"`
 }
 
+func (w Workout) IsComplete() bool {
+	return w.CurrentStage >= len(w.Stages)
+}
+
+func (w Workout) Advance() Workout {
+	w.CurrentStage = min(len(w.Stages), w.CurrentStage+1)
+	return w
+}
+
 func newDefaultWorkout() Workout {
 	return Workout{
 		ID: uuid.NewString(),

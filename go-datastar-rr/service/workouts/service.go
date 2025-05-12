@@ -2,53 +2,65 @@ package workouts
 
 import (
 	"context"
-	"errors"
-	"sync"
+	"log/slog"
 )
 
-type inProgressWorkout struct {
-	stageIndex int
-	workout    Workout
+type keyValueStore interface {
+	createWorkout(ctx context.Context, w Workout) error
+	saveWorkout(ctx context.Context, w Workout) error
+	getWorkout(ctx context.Context, id string) (Workout, error)
 }
 
 type Service struct {
-	mu             sync.Mutex
-	inProgressByID map[string]inProgressWorkout
+	store keyValueStore
 }
 
-func New() *Service {
+func New(s keyValueStore) *Service {
 	return &Service{
-		inProgressByID: make(map[string]inProgressWorkout),
+		store: s,
 	}
 }
 
-func (s *Service) Start(ctx context.Context) (Workout, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
+func (s *Service) Start(ctx context.Context) (string, error) {
 	workout := newDefaultWorkout()
 
-	s.inProgressByID[workout.ID] = inProgressWorkout{
-		workout: workout,
+	err := s.store.createWorkout(ctx, workout)
+	if err != nil {
+		return "", err
 	}
-	return s.inProgressByID[workout.ID].workout, nil
+
+	return workout.ID, nil
 }
 
-func (s *Service) Advance(ctx context.Context, id string) (Stage, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	w, ok := s.inProgressByID[id]
-	if !ok {
-		return nil, errors.New("workout not found")
+func (s *Service) GetCurrentStage(ctx context.Context, id string) (Stage, error) {
+	w, err := s.store.getWorkout(ctx, id)
+	if err != nil {
+		return nil, err
 	}
 
-	w.stageIndex++
-	if w.stageIndex >= len(w.workout.Stages) {
+	if w.IsComplete() {
 		return End{}, nil
 	}
 
-	s.inProgressByID[id] = w
+	return w.Stages[w.CurrentStage], nil
+}
 
-	return w.workout.Stages[w.stageIndex], nil
+func (s *Service) Advance(ctx context.Context, id string) (Stage, error) {
+	w, err := s.store.getWorkout(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	w = w.Advance()
+	err = s.store.saveWorkout(ctx, w)
+	if err != nil {
+		return nil, err
+	}
+
+	if w.IsComplete() {
+		slog.Info("advance", "status", "ending workout")
+		return End{}, nil
+	}
+
+	return w.Stages[w.CurrentStage], nil
 }
