@@ -5,17 +5,17 @@ import (
 	"log/slog"
 )
 
-type keyValueStore interface {
+type Store interface {
 	createWorkout(ctx context.Context, w Workout) error
 	saveWorkout(ctx context.Context, w Workout) error
 	getWorkout(ctx context.Context, id string) (Workout, error)
 }
 
 type Service struct {
-	store keyValueStore
+	store Store
 }
 
-func New(s keyValueStore) *Service {
+func New(s Store) *Service {
 	return &Service{
 		store: s,
 	}

@@ -4,17 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"os"
-	"path/filepath"
 )
 
 type fileSystemStore struct {
-	dir string
+	root *os.Root
 }
 
-func NewFSStore(dir string) fileSystemStore {
-	return fileSystemStore{
-		dir: dir,
+func NewFSStore(dir string) (fileSystemStore, error) {
+	r, err := os.OpenRoot(dir)
+	if err != nil {
+		return fileSystemStore{}, err
 	}
+
+	return fileSystemStore{
+		root: r,
+	}, nil
 }
 
 func (s fileSystemStore) createWorkout(ctx context.Context, w Workout) error {
@@ -26,7 +30,7 @@ func (s fileSystemStore) saveWorkout(ctx context.Context, w Workout) error {
 }
 
 func (s fileSystemStore) getWorkout(ctx context.Context, id string) (Workout, error) {
-	f, err := os.Open(filepath.Join(s.dir, id+".json"))
+	f, err := s.root.Open(id + ".json")
 	if err != nil {
 		return Workout{}, err
 	}
@@ -42,7 +46,7 @@ func (s fileSystemStore) getWorkout(ctx context.Context, id string) (Workout, er
 }
 
 func (s fileSystemStore) persistWorkout(w Workout, flags int) error {
-	f, err := os.OpenFile(filepath.Join(s.dir, w.ID+".json"), flags, os.ModePerm)
+	f, err := s.root.OpenFile(w.ID+".json", flags, os.ModePerm)
 	if err != nil {
 		return err
 	}

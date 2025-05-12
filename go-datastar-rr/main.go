@@ -41,14 +41,22 @@ func main() {
 		}
 	})
 
-	var hs *workoutservice.Service
+	var path string
 	if isDeployed() {
-		path := os.Getenv("/workouts")
-		hs = workoutservice.New(workoutservice.NewFSStore(path))
+		path = os.Getenv("/workouts")
 	} else {
-		hs = workoutservice.New(workoutservice.NewFSStore("./data"))
+		path = os.Getenv("./data")
 	}
 
+	var store workoutservice.Store
+	var err error
+	store, err = workoutservice.NewFSStore(path)
+	if err != nil {
+		slog.Error("startup", "status", "workout store cannot be initialized", "err", err)
+		store = workoutservice.NewMemoryStore()
+	}
+
+	hs := workoutservice.New(store)
 	h := workouts.NewHandler(hs)
 	mux.Handle("POST /workouts", h.CreateWorkout())
 	mux.Handle("GET /workouts/{id}", h.GetWorkout())

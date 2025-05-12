@@ -1,6 +1,7 @@
 package workouts
 
 import (
+	"io/fs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,8 @@ import (
 func TestFSStore(t *testing.T) {
 	dir := t.TempDir()
 
-	s := NewFSStore(dir)
+	s, err := NewFSStore(dir)
+	require.NoError(t, err)
 
 	w := newDefaultWorkout()
 
@@ -28,4 +30,15 @@ func TestFSStore(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, w, gotW)
+}
+
+func TestFSStore_PathEscape(t *testing.T) {
+	dir := t.TempDir()
+
+	s, err := NewFSStore(dir)
+	require.NoError(t, err)
+
+	_, err = s.getWorkout(t.Context(), "../bad_actor")
+	var expErr *fs.PathError
+	require.ErrorAs(t, err, &expErr)
 }
