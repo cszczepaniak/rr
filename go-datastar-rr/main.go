@@ -43,9 +43,9 @@ func main() {
 
 	var path string
 	if isDeployed() {
-		path = os.Getenv("/workouts")
+		path = os.Getenv("RAILWAY_VOLUME_MOUNT_PATH")
 	} else {
-		path = os.Getenv("./data")
+		path = "./data"
 	}
 
 	var store workoutservice.Store
