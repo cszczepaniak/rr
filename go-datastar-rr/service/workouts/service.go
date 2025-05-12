@@ -3,7 +3,6 @@ package workouts
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"sync"
 )
 
@@ -44,9 +43,7 @@ func (s *Service) Advance(ctx context.Context, id string) (Stage, error) {
 		return nil, errors.New("workout not found")
 	}
 
-	slog.Info("stageindex", "n", w.stageIndex)
 	w.stageIndex++
-	slog.Info("stageindex", "n", w.stageIndex)
 	if w.stageIndex >= len(w.workout.Stages) {
 		return End{}, nil
 	}
