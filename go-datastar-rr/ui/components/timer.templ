@@ -7,38 +7,38 @@ templ Timer(
 		id="timer"
 		class="flex flex-col gap-y-8 items-center"
 		data-signals={ props.FormatSignalsJSON() }
+		data-on-load="
+			onLoad = () => {
+				if (!$autoStart) {
+					return;
+				}
+				clearAndStop = () => {
+					if ($countingIn) {
+						$countingIn = false;
+						$ticks = $timerTicks;
+					} else {
+						window.clearInterval($interval);
+						$started = false;
+						$done = true;
+					}
+				};
+				onTick = () => {
+					$ticks--;
+					if ($ticks === 0) {
+						clearAndStop();
+					}
+				};
+				$started = true;
+				onTick();
+				$interval = window.setInterval(onTick, 100)
+			};
+			onLoad();
+		"
 	>
 		<span
 			id="time"
 			class="text-center text-7xl"
 			data-text="`${Math.floor($ticks/10)}.${Math.floor($ticks%10)}`"
-			data-on-load="
-				onLoad = () => {
-					if (!$autoStart) {
-						return;
-					}
-					clearAndStop = () => {
-						if ($countingIn) {
-							$countingIn = false;
-							$ticks = $timerTicks;
-						} else {
-							window.clearInterval($interval);
-							$started = false;
-							$done = true;
-						}
-					};
-					onTick = () => {
-						$ticks--;
-						if ($ticks === 0) {
-							clearAndStop();
-						}
-					};
-					$started = true;
-					onTick();
-					$interval = window.setInterval(onTick, 100)
-				};
-				onLoad();
-			"
 		></span>
 		<button
 			id="start"
