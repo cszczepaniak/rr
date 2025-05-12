@@ -49,21 +49,16 @@ type marshalledStage struct {
 	Value json.RawMessage `json:"value"`
 }
 
-func (w Workout) MarshalJSON() ([]byte, error) {
-	marshalable := struct {
-		ID     string            `json:"id"`
-		Stages []marshalledStage `json:"stages"`
-	}{
-		ID: w.ID,
-	}
-	for _, s := range w.Stages {
-		marshalled, err := marshalStage(s)
+func (s Stages) MarshalJSON() ([]byte, error) {
+	var marshalable []marshalledStage
+	for _, stage := range s {
+		marshalled, err := marshalStage(stage)
 		if err != nil {
 			return nil, err
 		}
 
-		marshalable.Stages = append(marshalable.Stages, marshalledStage{
-			Type:  reflect.TypeOf(s).String(),
+		marshalable = append(marshalable, marshalledStage{
+			Type:  reflect.TypeOf(stage).String(),
 			Value: marshalled,
 		})
 	}
@@ -71,49 +66,45 @@ func (w Workout) MarshalJSON() ([]byte, error) {
 	return json.Marshal(marshalable)
 }
 
-func (w *Workout) UnmarshalJSON(bs []byte) error {
-	var data struct {
-		ID     string            `json:"id"`
-		Stages []json.RawMessage `json:"stages"`
-	}
+func (s *Stages) UnmarshalJSON(bs []byte) error {
+	var data []marshalledStage
 	err := json.Unmarshal(bs, &data)
 	if err != nil {
 		return err
 	}
 
-	w.ID = data.ID
-	for _, mStage := range data.Stages {
+	stages := make(Stages, 0, len(data))
+	for _, mStage := range data {
 		type unmarshalledStage struct {
-			Type  string `json:"type"`
-			Value struct {
-				Category string        `json:"category"`
-				Name     string        `json:"name"`
-				Reps     int           `json:"reps,omitzero"`
-				Duration time.Duration `json:"duration,omitzero"`
-			} `json:"value"`
+			Category string        `json:"category"`
+			Name     string        `json:"name"`
+			Reps     int           `json:"reps,omitzero"`
+			Duration time.Duration `json:"duration,omitzero"`
 		}
 
 		var uStage unmarshalledStage
-		err := json.Unmarshal(mStage, &uStage)
+		err := json.Unmarshal(mStage.Value, &uStage)
 		if err != nil {
 			return err
 		}
 
-		switch uStage.Type {
+		switch mStage.Type {
 		case reflect.TypeOf(Reps{}).String():
-			w.Stages = append(w.Stages, newReps(uStage.Value.Category, uStage.Value.Name, uStage.Value.Reps))
+			stages = append(stages, newReps(uStage.Category, uStage.Name, uStage.Reps))
 		case reflect.TypeOf(Hold{}).String():
-			w.Stages = append(w.Stages, newHold(uStage.Value.Category, uStage.Value.Name, uStage.Value.Duration))
+			stages = append(stages, newHold(uStage.Category, uStage.Name, uStage.Duration))
 		case reflect.TypeOf(Rest{}).String():
-			w.Stages = append(w.Stages, Rest{
+			stages = append(stages, Rest{
 				stageBase: stageBase{
-					category: uStage.Value.Category,
-					name:     uStage.Value.Name,
+					category: uStage.Category,
+					name:     uStage.Name,
 				},
-				Duration: uStage.Value.Duration,
+				Duration: uStage.Duration,
 			})
 		}
 	}
+
+	*s = stages
 
 	return nil
 }

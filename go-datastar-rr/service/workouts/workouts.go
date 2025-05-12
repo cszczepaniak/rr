@@ -83,10 +83,12 @@ type End struct {
 	stageBase
 }
 
+type Stages []Stage
+
 type Workout struct {
-	ID           string  `json:"id"`
-	Stages       []Stage `json:"stages"`
-	CurrentStage int     `json:"current_stage"`
+	ID           string `json:"id"`
+	Stages       Stages `json:"stages"`
+	CurrentStage int    `json:"current_stage"`
 }
 
 func newDefaultWorkout() Workout {
