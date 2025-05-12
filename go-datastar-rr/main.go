@@ -37,9 +37,10 @@ func main() {
 		}
 	})
 
-	hs := workoutservice.New()
+	hs := workoutservice.New(workoutservice.NewFSStore("./data"))
 	h := workouts.NewHandler(hs)
 	mux.Handle("POST /workouts", h.CreateWorkout())
+	mux.Handle("GET /workouts/{id}", h.GetWorkout())
 	mux.Handle("POST /workouts/{id}/advance", h.AdvanceWorkout())
 
 	if err := http.ListenAndServe(":8080", mux); err != nil {

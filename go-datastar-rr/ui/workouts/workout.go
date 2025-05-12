@@ -3,7 +3,6 @@ package workouts
 import (
 	"datastar/rr/service/workouts"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -30,12 +29,27 @@ func (h Handler) CreateWorkout() http.Handler {
 			return
 		}
 
-		viewData, err := stageToViewData(workout.Stages[0])
+		w.Header().Add("Location", fmt.Sprintf("/workouts/%s", workout))
+		w.WriteHeader(http.StatusSeeOther)
+	})
+}
+
+func (h Handler) GetWorkout() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+
+		stage, err := h.service.GetCurrentStage(r.Context(), id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		viewData.WorkoutID = workout.ID
+
+		viewData, err := stageToViewData(stage)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		viewData.WorkoutID = id
 
 		err = Workout(viewData).Render(r.Context(), w)
 		if err != nil {
@@ -111,6 +125,7 @@ type ViewData struct {
 	WorkoutID       string
 	CurrentMovement Movement
 	IsResting       bool
+	IsDone          bool
 	RestDuration    time.Duration
 }
 
@@ -131,7 +146,9 @@ func stageToViewData(s workouts.Stage) (ViewData, error) {
 
 	switch s := s.(type) {
 	case workouts.End:
-		return ViewData{}, errors.New("workout is over")
+		return ViewData{
+			IsDone: true,
+		}, nil
 	case workouts.Hold:
 		viewData.CurrentMovement.Dur = s.Duration
 	case workouts.Reps:
