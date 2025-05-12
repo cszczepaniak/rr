@@ -13,8 +13,9 @@ func TestJSON(t *testing.T) {
 		ID: "foo",
 		Stages: []Stage{
 			newReps("category1", "name1", 12),
+			newHold("category2", "name2", time.Second),
 			newRest(
-				newHold("category2", "name2", time.Second),
+				newHold("category3", "name3", time.Second),
 				time.Minute,
 			),
 		},
