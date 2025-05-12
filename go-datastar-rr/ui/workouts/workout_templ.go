@@ -82,7 +82,7 @@ func body(data ViewData) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"workout\" class=\"flex flex-col flex-grow min-h-screen gap-y-8 max-w-md mx-auto p-2 text-center justify-between md:justify-normal\"><div class=\"flex flex-col space-y-8\"><h1 class=\"text-7xl\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"workout\" class=\"flex flex-col flex-grow min-h-dvh gap-y-8 max-w-md mx-auto p-2 text-center justify-between md:justify-normal\"><div class=\"flex flex-col space-y-8\"><h1 class=\"text-7xl\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -43,7 +43,7 @@ func Index() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex flex-col max-w-md min-h-screen mx-auto text-center px-2 py-8 justify-between md:justify-normal\"><h1 class=\"text-5xl\">Recommended Routine</h1><form action=\"/workouts\" method=\"POST\"><button class=\"text-3xl py-4 px-8 bg-blue-300 rounded-md mt-8\">Start a Workout</button></form></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex flex-col max-w-md min-h-dvh mx-auto text-center px-2 py-8 justify-between md:justify-normal\"><h1 class=\"text-5xl\">Recommended Routine</h1><form action=\"/workouts\" method=\"POST\"><button class=\"text-3xl py-4 px-8 bg-blue-300 rounded-md mt-8\">Start a Workout</button></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
