@@ -13,10 +13,14 @@ import (
 //go:embed web/*
 var webFS embed.FS
 
+func isDeployed() bool {
+	return os.Getenv("RAILWAY_SERVICE_ID") != ""
+}
+
 func main() {
 	mux := http.NewServeMux()
 
-	if os.Getenv("RAILWAY_SERVICE_ID") != "" {
+	if isDeployed() {
 		// If deployed, use the embedded filesystem; we don't do this for development because it's
 		// easier to get live updates from the actual directory.
 		//
@@ -37,7 +41,14 @@ func main() {
 		}
 	})
 
-	hs := workoutservice.New(workoutservice.NewFSStore("./data"))
+	var hs *workoutservice.Service
+	if isDeployed() {
+		path := os.Getenv("/workouts")
+		hs = workoutservice.New(workoutservice.NewFSStore(path))
+	} else {
+		hs = workoutservice.New(workoutservice.NewFSStore("./data"))
+	}
+
 	h := workouts.NewHandler(hs)
 	mux.Handle("POST /workouts", h.CreateWorkout())
 	mux.Handle("GET /workouts/{id}", h.GetWorkout())
