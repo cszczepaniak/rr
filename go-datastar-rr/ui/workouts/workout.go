@@ -29,8 +29,7 @@ func (h Handler) CreateWorkout() http.Handler {
 			return
 		}
 
-		w.Header().Add("Location", fmt.Sprintf("/workouts/%s", workout))
-		w.WriteHeader(http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/workouts/%s", workout), http.StatusSeeOther)
 	})
 }
 
