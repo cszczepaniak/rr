@@ -123,9 +123,11 @@ func (h Handler) AdvanceWorkout() http.Handler {
 type ViewData struct {
 	WorkoutID       string
 	CurrentMovement Movement
-	IsResting       bool
 	IsDone          bool
-	RestDuration    time.Duration
+
+	IsResting    bool
+	RestDuration time.Duration
+	AfterRest    string
 }
 
 type Movement struct {
@@ -155,6 +157,7 @@ func stageToViewData(s workouts.Stage) (ViewData, error) {
 	case workouts.Rest:
 		viewData.IsResting = true
 		viewData.RestDuration = s.Duration
+		viewData.AfterRest = s.Name()
 	default:
 		return ViewData{}, fmt.Errorf("unexpected workouts.Stage: %#v", s)
 	}

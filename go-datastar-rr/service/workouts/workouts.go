@@ -61,11 +61,11 @@ type Rest struct {
 	Duration time.Duration `json:"dur"`
 }
 
-func newRest(from Stage, dur time.Duration) Rest {
+func newRest(s Stage, dur time.Duration) Rest {
 	return Rest{
 		stageBase: stageBase{
-			category: from.Category(),
-			name:     from.Name(),
+			category: s.Category(),
+			name:     s.Name(),
 		},
 		Duration: dur,
 	}

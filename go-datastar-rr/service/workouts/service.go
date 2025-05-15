@@ -42,7 +42,7 @@ func (s *Service) GetCurrentStage(ctx context.Context, id string) (Stage, error)
 		return End{}, nil
 	}
 
-	return w.Stages[w.CurrentStage], nil
+	return hackRestOffset(w), nil
 }
 
 func (s *Service) Advance(ctx context.Context, id string) (Stage, error) {
@@ -62,5 +62,25 @@ func (s *Service) Advance(ctx context.Context, id string) (Stage, error) {
 		return End{}, nil
 	}
 
-	return w.Stages[w.CurrentStage], nil
+	return hackRestOffset(w), nil
+}
+
+func hackRestOffset(w Workout) Stage {
+	stage := w.Stages[w.CurrentStage]
+	rest, ok := stage.(Rest)
+	if !ok {
+		return stage
+	}
+
+	// HACK: if this is Rest, we're going to swap in the _next_ stage so we can render what's
+	// coming next during the rest.
+	nextIdx := w.CurrentStage + 1
+	if nextIdx >= len(w.Stages) {
+		// This would be surprising! Let's log but continue with the orignal Rest.
+		slog.Error("advance", "status", "rest with no next stage")
+		return stage
+	}
+
+	nextStage := w.Stages[nextIdx]
+	return newRest(nextStage, rest.Duration)
 }
