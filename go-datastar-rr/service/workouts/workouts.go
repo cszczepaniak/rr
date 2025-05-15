@@ -115,11 +115,11 @@ func newDefaultWorkout() Workout {
 			repeat(3,
 				newWithRest(
 					newHold("Skill Work", "Parallel Bar Support", 30*time.Second),
-					90*time.Second,
+					60*time.Second,
 				),
 				newWithRest(
 					newHold("Skill Work", "Handstand (Wall Start)", 30*time.Second),
-					90*time.Second,
+					60*time.Second,
 				),
 			),
 			repeat(3,
@@ -157,10 +157,8 @@ func newDefaultWorkout() Workout {
 					newHold("Bodyline Drills", "Plank (Elbows)", 30*time.Second),
 					60*time.Second,
 				),
-				newWithRest(
-					newHold("Bodyline Drills", "Side Plank (Left Elbow)", 30*time.Second),
-					60*time.Second,
-				),
+				// No rest after Left Elbow; go straight to Right Elbow
+				iterOf(newHold("Bodyline Drills", "Side Plank (Left Elbow)", 30*time.Second)),
 				newWithRest(
 					newHold("Bodyline Drills", "Side Plank (Right Elbow)", 30*time.Second),
 					60*time.Second,
