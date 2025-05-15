@@ -83,12 +83,12 @@ func body(data ViewData) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if data.IsDone {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"workout\" class=\"flex flex-col flex-grow min-h-dvh gap-y-8 max-w-md mx-auto p-2 text-center\"><p class=\"text-4xl\">Well done! You finished your workout!</p><p class=\"text-9xl mt-16\">🎉</p></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"workout\" class=\"flex flex-col flex-grow min-h-svh gap-y-8 max-w-md mx-auto p-2 text-center\"><p class=\"text-4xl\">Well done! You finished your workout!</p><p class=\"text-9xl mt-16\">🎉</p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div id=\"workout\" class=\"flex flex-col flex-grow min-h-dvh gap-y-8 max-w-md mx-auto p-2 text-center justify-between md:justify-normal\"><div class=\"flex flex-col space-y-8\"><h1 class=\"text-7xl\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div id=\"workout\" class=\"flex flex-col flex-grow min-h-svh gap-y-8 max-w-md mx-auto p-2 text-center justify-between md:justify-normal\"><div class=\"flex flex-col space-y-8\"><h1 class=\"text-7xl\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

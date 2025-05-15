@@ -196,8 +196,8 @@
   .aspect-square {
     aspect-ratio: 1 / 1;
   }
-  .min-h-dvh {
-    min-height: 100dvh;
+  .min-h-svh {
+    min-height: 100svh;
   }
   .w-fit {
     width: fit-content;

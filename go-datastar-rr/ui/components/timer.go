@@ -30,7 +30,7 @@ func (props TimerProps) FormatSignalsJSON() string {
 	signalsJSON := TimerSignals{
 		CountInTicks: durToTicks(props.CountIn),
 		TimerTicks:   durToTicks(props.Duration),
-		CountingIn:   props.Duration > 0,
+		CountingIn:   props.CountIn > 0,
 		Ticks:        durToTicks(cmp.Or(props.CountIn, props.Duration)),
 		Started:      false,
 		Done:         false,
