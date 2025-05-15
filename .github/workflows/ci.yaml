@@ -15,7 +15,7 @@ jobs:
           mv tailwindcss-linux-x64 /usr/local/bin/tailwindcss
 
       - name: Generate Tailwind
-        run: tailwind -i web/input.css -o web/output.css
+        run: tailwindcss -i web/input.css -o web/output.css
 
       - name: Verify Tailwind
         run: |
