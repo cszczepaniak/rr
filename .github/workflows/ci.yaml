@@ -2,7 +2,7 @@ name: GitHub Actions Demo
 on:
   push:
     branches: [main]
-  pull-request:
+  pull_request:
 jobs:
   CI:
     runs-on: ubuntu-latest
