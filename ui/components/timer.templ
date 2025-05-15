@@ -1,0 +1,88 @@
+package components
+
+templ Timer(
+	props TimerProps,
+) {
+	<div
+		id="timer"
+		class="flex flex-col gap-y-8 items-center"
+		data-signals={ props.FormatSignalsJSON() }
+		data-on-load="
+			onLoad = () => {
+				if (!$autoStart) {
+					return;
+				}
+				clearAndStop = () => {
+					if ($countingIn) {
+						$countingIn = false;
+						$ticks = $timerTicks;
+					} else {
+						window.clearInterval($interval);
+						$started = false;
+						$done = true;
+					}
+				};
+				onTick = () => {
+					$ticks--;
+					if ($ticks === 0) {
+						clearAndStop();
+					}
+				};
+				$started = true;
+				onTick();
+				$interval = window.setInterval(onTick, 100)
+			};
+			onLoad();
+		"
+	>
+		<span
+			id="time"
+			class="text-center text-7xl"
+			data-text="`${Math.floor($ticks/10)}.${Math.floor($ticks%10)}`"
+		></span>
+		<button
+			id="start"
+			class="rounded-full bg-blue-200 cursor-pointer p-8 aspect-square w-fit"
+			data-on-click="
+				clearAndStop = () => {
+					if ($countingIn) {
+						$countingIn = false;
+						$ticks = $timerTicks;
+					} else {
+						window.clearInterval($interval);
+						$started = false;
+						$done = true;
+					}
+				};
+				onTick = () => {
+					$ticks--;
+					if ($ticks === 0) {
+						clearAndStop();
+					}
+				};
+				$started = true;
+				onTick();
+				$interval = window.setInterval(onTick, 100)
+			"
+			data-show="!$started && !$done"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+				<path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z"></path>
+			</svg>
+		</button>
+		<button
+			id="stop"
+			class="rounded-full bg-blue-200 cursor-pointer p-8 aspect-square w-fit"
+			data-on-click="
+				$started = false;
+				window.clearInterval($interval);
+			"
+			data-show="$started && !$done"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+				<path d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z"></path>
+				<path d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z"></path>
+			</svg>
+		</button>
+	</div>
+}
