@@ -23,7 +23,7 @@ jobs:
         run: |
           DIFF=$(git diff)
           if [ -n "$DIFF" ]; then
-            echo "Tailwind generated CSS was out of date! Please regenerate it."
+            echo "::error file=web/output.css,line=1,col=1,title=STALE-TAILWIND::Tailwind generated CSS was out of date! Please regenerate it."
             echo "Diff:"
             echo ""
             git diff
