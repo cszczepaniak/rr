@@ -27,4 +27,5 @@ jobs:
             echo "Diff:"
             echo ""
             git diff
+            exit 1
           fi
