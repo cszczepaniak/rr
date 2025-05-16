@@ -1,4 +1,4 @@
-package components
+package workouts
 
 import (
 	"cmp"
@@ -9,13 +9,13 @@ import (
 	"github.com/a-h/templ"
 )
 
-type TimerProps struct {
+type timerProps struct {
 	Duration  time.Duration
 	CountIn   time.Duration
 	AutoStart bool
 }
 
-type TimerSignals struct {
+type timerSignals struct {
 	CountInTicks int       `json:"countInTicks"`
 	TimerTicks   int       `json:"timerTicks"`
 	CountingIn   bool      `json:"countingIn"`
@@ -26,8 +26,8 @@ type TimerSignals struct {
 	Interval     *struct{} `json:"interval"`
 }
 
-func (props TimerProps) FormatSignalsJSON() string {
-	signalsJSON := TimerSignals{
+func (props timerProps) formatSignalsJSON() string {
+	signalsJSON := timerSignals{
 		CountInTicks: durToTicks(props.CountIn),
 		TimerTicks:   durToTicks(props.Duration),
 		CountingIn:   props.CountIn > 0,
@@ -42,7 +42,7 @@ func (props TimerProps) FormatSignalsJSON() string {
 	return string(bs)
 }
 
-func (props TimerProps) formatOnDoneCallback() templ.JSExpression {
+func (props timerProps) formatOnDoneCallback() templ.JSExpression {
 	if props.CountIn > 0 {
 		return templ.JSExpression(fmt.Sprintf("() => resetTo(%d)", durToTicks(props.Duration)))
 	}
@@ -50,7 +50,7 @@ func (props TimerProps) formatOnDoneCallback() templ.JSExpression {
 	return templ.JSExpression("")
 }
 
-func (props TimerProps) FormatStartTimerCall() templ.ComponentScript {
+func (props timerProps) FormatStartTimerCall() templ.ComponentScript {
 	if props.CountIn > 0 {
 		return templ.JSFuncCall(
 			"startTimer",

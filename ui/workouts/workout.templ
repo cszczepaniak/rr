@@ -34,8 +34,8 @@ templ body(data ViewData) {
 							<p class="text-xl font-semibold italic">Next up:</p>
 							<p class="text-5xl">{ data.AfterRest }</p>
 						</div>
-						@components.Timer(
-							components.TimerProps{
+						@timer(
+							timerProps{
 								Duration:  data.RestDuration,
 								AutoStart: true,
 							})
@@ -47,8 +47,8 @@ templ body(data ViewData) {
 								<p class="text-xl font-semibold italic">Do { data.CurrentMovement.Reps } reps!</p>
 							case data.CurrentMovement.Dur != 0:
 								<p class="text-xl font-semibold italic">Hold for { data.CurrentMovement.Dur }!</p>
-								@components.Timer(
-									components.TimerProps{
+								@timer(
+									timerProps{
 										CountIn:  3 * time.Second,
 										Duration: data.CurrentMovement.Dur,
 									})

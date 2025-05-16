@@ -111,8 +111,8 @@ func body(data ViewData) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = components.Timer(
-					components.TimerProps{
+				templ_7745c5c3_Err = timer(
+					timerProps{
 						Duration:  data.RestDuration,
 						AutoStart: true,
 					}).Render(ctx, templ_7745c5c3_Buffer)
@@ -187,8 +187,8 @@ func body(data ViewData) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = components.Timer(
-						components.TimerProps{
+					templ_7745c5c3_Err = timer(
+						timerProps{
 							CountIn:  3 * time.Second,
 							Duration: data.CurrentMovement.Dur,
 						}).Render(ctx, templ_7745c5c3_Buffer)
