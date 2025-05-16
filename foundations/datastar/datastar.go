@@ -63,7 +63,7 @@ func (r Responder) MergeFragmentTempl(ctx context.Context, frag templComponent) 
 func (r Responder) ExecuteScript(script string) {
 	defer r.finalize()
 
-	r.writeEvent(mergeFragments)
+	r.writeEvent(executeScript)
 	for ln := range strings.Lines(script) {
 		r.writeData("script", []byte(strings.TrimSuffix(ln, "\n")))
 	}

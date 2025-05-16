@@ -51,3 +51,16 @@ data: fragments </div>
 
 `, resp)
 }
+
+func TestDatastar_ExecuteScript(t *testing.T) {
+	s := newTestServer(t, func(r Responder) {
+		r.ExecuteScript("console.log('hi!');\nconsole.log('hey!');")
+	})
+
+	resp := s.emptyRequest(t)
+	assert.Equal(t, `event: datastar-execute-script
+data: script console.log('hi!');
+data: script console.log('hey!');
+
+`, resp)
+}
