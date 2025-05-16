@@ -3,16 +3,16 @@ package workouts
 import (
 	"cmp"
 	"encoding/json"
-	"fmt"
 	"time"
-
-	"github.com/a-h/templ"
 )
 
 type timerProps struct {
-	Duration  time.Duration
-	CountIn   time.Duration
-	AutoStart bool
+	autoAdvance bool
+	workoutID   string
+
+	duration  time.Duration
+	countIn   time.Duration
+	autoStart bool
 }
 
 type timerSignals struct {
@@ -28,37 +28,18 @@ type timerSignals struct {
 
 func (props timerProps) formatSignalsJSON() string {
 	signalsJSON := timerSignals{
-		CountInTicks: durToTicks(props.CountIn),
-		TimerTicks:   durToTicks(props.Duration),
-		CountingIn:   props.CountIn > 0,
-		Ticks:        durToTicks(cmp.Or(props.CountIn, props.Duration)),
+		CountInTicks: durToTicks(props.countIn),
+		TimerTicks:   durToTicks(props.duration),
+		CountingIn:   props.countIn > 0,
+		Ticks:        durToTicks(cmp.Or(props.countIn, props.duration)),
 		Started:      false,
 		Done:         false,
-		AutoStart:    props.AutoStart,
+		AutoStart:    props.autoStart,
 		Interval:     nil,
 	}
 
 	bs, _ := json.Marshal(signalsJSON)
 	return string(bs)
-}
-
-func (props timerProps) formatOnDoneCallback() templ.JSExpression {
-	if props.CountIn > 0 {
-		return templ.JSExpression(fmt.Sprintf("() => resetTo(%d)", durToTicks(props.Duration)))
-	}
-
-	return templ.JSExpression("")
-}
-
-func (props timerProps) FormatStartTimerCall() templ.ComponentScript {
-	if props.CountIn > 0 {
-		return templ.JSFuncCall(
-			"startTimer",
-			props.formatOnDoneCallback(),
-		)
-	}
-
-	return templ.JSFuncCall("startTimer")
 }
 
 const tick = 100 * time.Millisecond

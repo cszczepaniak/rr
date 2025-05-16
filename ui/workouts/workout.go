@@ -130,6 +130,10 @@ type viewData struct {
 	afterRest    string
 }
 
+func advanceWorkout(id string) string {
+	return fmt.Sprintf("@post('/workouts/%s/advance')", id)
+}
+
 type movement struct {
 	category string
 	name     string

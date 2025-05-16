@@ -2,7 +2,6 @@ package workouts
 
 import (
 	"datastar/rr/ui/components"
-	"fmt"
 	"time"
 )
 
@@ -36,8 +35,10 @@ templ body(data viewData) {
 						</div>
 						@timer(
 							timerProps{
-								Duration:  data.restDuration,
-								AutoStart: true,
+								autoAdvance: true,
+								workoutID:   data.workoutID,
+								duration:    data.restDuration,
+								autoStart:   true,
 							})
 					default:
 						<h1 class="text-7xl">{ data.currentMovement.category }</h1>
@@ -49,14 +50,14 @@ templ body(data viewData) {
 								<p class="text-xl font-semibold italic">Hold for { data.currentMovement.dur }!</p>
 								@timer(
 									timerProps{
-										CountIn:  3 * time.Second,
-										Duration: data.currentMovement.dur,
+										countIn:  3 * time.Second,
+										duration: data.currentMovement.dur,
 									})
 						}
 				}
 			</div>
 			<button
-				data-on-click={ fmt.Sprintf("@post('/workouts/%s/advance')", data.workoutID) }
+				data-on-click={ advanceWorkout(data.workoutID) }
 				class="bg-blue-200 rounded-md text-xl py-4 px-4 hover:cursor-pointer"
 			>Next</button>
 		</div>

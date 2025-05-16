@@ -10,7 +10,6 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"datastar/rr/ui/components"
-	"fmt"
 	"time"
 )
 
@@ -101,7 +100,7 @@ func body(data viewData) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(data.afterRest)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 35, Col: 43}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 34, Col: 43}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -113,8 +112,10 @@ func body(data viewData) templ.Component {
 				}
 				templ_7745c5c3_Err = timer(
 					timerProps{
-						Duration:  data.restDuration,
-						AutoStart: true,
+						autoAdvance: true,
+						workoutID:   data.workoutID,
+						duration:    data.restDuration,
+						autoStart:   true,
 					}).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -127,7 +128,7 @@ func body(data viewData) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(data.currentMovement.category)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 43, Col: 58}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 44, Col: 58}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -140,7 +141,7 @@ func body(data viewData) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(data.currentMovement.name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 44, Col: 54}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 45, Col: 54}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
@@ -159,7 +160,7 @@ func body(data viewData) templ.Component {
 					var templ_7745c5c3_Var7 string
 					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(data.currentMovement.reps)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 47, Col: 78}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 48, Col: 78}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 					if templ_7745c5c3_Err != nil {
@@ -177,7 +178,7 @@ func body(data viewData) templ.Component {
 					var templ_7745c5c3_Var8 string
 					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(data.currentMovement.dur)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 49, Col: 83}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 50, Col: 83}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 					if templ_7745c5c3_Err != nil {
@@ -189,8 +190,8 @@ func body(data viewData) templ.Component {
 					}
 					templ_7745c5c3_Err = timer(
 						timerProps{
-							CountIn:  3 * time.Second,
-							Duration: data.currentMovement.dur,
+							countIn:  3 * time.Second,
+							duration: data.currentMovement.dur,
 						}).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -202,9 +203,9 @@ func body(data viewData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("@post('/workouts/%s/advance')", data.workoutID))
+			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(advanceWorkout(data.workoutID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 59, Col: 80}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 60, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
