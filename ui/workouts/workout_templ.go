@@ -10,11 +10,10 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"datastar/rr/ui/components"
-	"fmt"
 	"time"
 )
 
-func Workout(data ViewData) templ.Component {
+func Workout(data viewData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -61,7 +60,7 @@ func Workout(data ViewData) templ.Component {
 	})
 }
 
-func body(data ViewData) templ.Component {
+func body(data viewData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -82,7 +81,7 @@ func body(data ViewData) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		if data.IsDone {
+		if data.isDone {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"workout\" class=\"flex flex-col flex-grow min-h-svh gap-y-8 max-w-md mx-auto p-2 text-center\"><p class=\"text-4xl\">Well done! You finished your workout!</p><p class=\"text-9xl mt-16\">🎉</p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -93,15 +92,15 @@ func body(data ViewData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			switch {
-			case data.IsResting:
+			case data.isResting:
 				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<h1 class=\"text-7xl\">Well done! Take a rest.</h1><div><p class=\"text-xl font-semibold italic\">Next up:</p><p class=\"text-5xl\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var4 string
-				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(data.AfterRest)
+				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(data.afterRest)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 35, Col: 43}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 34, Col: 43}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -111,10 +110,12 @@ func body(data ViewData) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = components.Timer(
-					components.TimerProps{
-						Duration:  data.RestDuration,
-						AutoStart: true,
+				templ_7745c5c3_Err = timer(
+					timerProps{
+						autoAdvance: true,
+						workoutID:   data.workoutID,
+						duration:    data.restDuration,
+						autoStart:   true,
 					}).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -125,9 +126,9 @@ func body(data ViewData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var5 string
-				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(data.CurrentMovement.Category)
+				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(data.currentMovement.category)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 43, Col: 58}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 44, Col: 58}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -138,9 +139,9 @@ func body(data ViewData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var6 string
-				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(data.CurrentMovement.Name)
+				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(data.currentMovement.name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 44, Col: 54}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 45, Col: 54}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
@@ -151,15 +152,15 @@ func body(data ViewData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				switch {
-				case data.CurrentMovement.Reps != 0:
+				case data.currentMovement.reps != 0:
 					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<p class=\"text-xl font-semibold italic\">Do ")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var7 string
-					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(data.CurrentMovement.Reps)
+					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(data.currentMovement.reps)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 47, Col: 78}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 48, Col: 78}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 					if templ_7745c5c3_Err != nil {
@@ -169,15 +170,15 @@ func body(data ViewData) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				case data.CurrentMovement.Dur != 0:
+				case data.currentMovement.dur != 0:
 					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<p class=\"text-xl font-semibold italic\">Hold for ")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var8 string
-					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(data.CurrentMovement.Dur)
+					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(data.currentMovement.dur)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 49, Col: 83}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 50, Col: 83}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 					if templ_7745c5c3_Err != nil {
@@ -187,10 +188,10 @@ func body(data ViewData) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = components.Timer(
-						components.TimerProps{
-							CountIn:  3 * time.Second,
-							Duration: data.CurrentMovement.Dur,
+					templ_7745c5c3_Err = timer(
+						timerProps{
+							countIn:  3 * time.Second,
+							duration: data.currentMovement.dur,
 						}).Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -202,15 +203,15 @@ func body(data ViewData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("@post('/workouts/%s/advance')", data.WorkoutID))
+			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(advanceWorkout(data.workoutID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 59, Col: 80}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `ui/workouts/workout.templ`, Line: 60, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\" class=\"bg-blue-200 rounded-md text-xl py-4 px-4 hover:cursor-pointer\">Next</button></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\" class=\"bg-blue-200 rounded-md text-xl -m-4 md:m-0 p-8 md:p-4 hover:cursor-pointer\">Next</button></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

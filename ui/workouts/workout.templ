@@ -2,18 +2,17 @@ package workouts
 
 import (
 	"datastar/rr/ui/components"
-	"fmt"
 	"time"
 )
 
-templ Workout(data ViewData) {
+templ Workout(data viewData) {
 	@components.Shell() {
 		@body(data)
 	}
 }
 
-templ body(data ViewData) {
-	if data.IsDone {
+templ body(data viewData) {
+	if data.isDone {
 		<div
 			id="workout"
 			class="flex flex-col flex-grow min-h-svh gap-y-8 max-w-md mx-auto p-2 text-center"
@@ -28,36 +27,38 @@ templ body(data ViewData) {
 		>
 			<div class="flex flex-col space-y-8">
 				switch  {
-					case data.IsResting:
+					case data.isResting:
 						<h1 class="text-7xl">Well done! Take a rest.</h1>
 						<div>
 							<p class="text-xl font-semibold italic">Next up:</p>
-							<p class="text-5xl">{ data.AfterRest }</p>
+							<p class="text-5xl">{ data.afterRest }</p>
 						</div>
-						@components.Timer(
-							components.TimerProps{
-								Duration:  data.RestDuration,
-								AutoStart: true,
+						@timer(
+							timerProps{
+								autoAdvance: true,
+								workoutID:   data.workoutID,
+								duration:    data.restDuration,
+								autoStart:   true,
 							})
 					default:
-						<h1 class="text-7xl">{ data.CurrentMovement.Category }</h1>
-						<h2 class="text-5xl">{ data.CurrentMovement.Name }</h2>
+						<h1 class="text-7xl">{ data.currentMovement.category }</h1>
+						<h2 class="text-5xl">{ data.currentMovement.name }</h2>
 						switch  {
-							case data.CurrentMovement.Reps != 0:
-								<p class="text-xl font-semibold italic">Do { data.CurrentMovement.Reps } reps!</p>
-							case data.CurrentMovement.Dur != 0:
-								<p class="text-xl font-semibold italic">Hold for { data.CurrentMovement.Dur }!</p>
-								@components.Timer(
-									components.TimerProps{
-										CountIn:  3 * time.Second,
-										Duration: data.CurrentMovement.Dur,
+							case data.currentMovement.reps != 0:
+								<p class="text-xl font-semibold italic">Do { data.currentMovement.reps } reps!</p>
+							case data.currentMovement.dur != 0:
+								<p class="text-xl font-semibold italic">Hold for { data.currentMovement.dur }!</p>
+								@timer(
+									timerProps{
+										countIn:  3 * time.Second,
+										duration: data.currentMovement.dur,
 									})
 						}
 				}
 			</div>
 			<button
-				data-on-click={ fmt.Sprintf("@post('/workouts/%s/advance')", data.WorkoutID) }
-				class="bg-blue-200 rounded-md text-xl py-4 px-4 hover:cursor-pointer"
+				data-on-click={ advanceWorkout(data.workoutID) }
+				class="bg-blue-200 rounded-md text-xl -m-4 md:m-0 p-8 md:p-4 hover:cursor-pointer"
 			>Next</button>
 		</div>
 	}

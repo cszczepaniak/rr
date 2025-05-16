@@ -1,12 +1,15 @@
-package components
+package workouts
 
-templ Timer(
-	props TimerProps,
+templ timer(
+	props timerProps,
 ) {
 	<div
 		id="timer"
 		class="flex flex-col gap-y-8 items-center"
-		data-signals={ props.FormatSignalsJSON() }
+		data-signals={ props.formatSignalsJSON() }
+		if props.autoAdvance {
+			data-on-signal-change-done={ "$done && " + advanceWorkout(props.workoutID) }
+		}
 		data-on-load="
 			onLoad = () => {
 				if (!$autoStart) {
