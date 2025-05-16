@@ -18,11 +18,9 @@ jobs:
           # Move tailwind to $PATH
           mv tailwindcss-linux-x64 /usr/local/bin/tailwindcss
 
-      - name: Generate Tailwind
-        run: tailwindcss -i web/input.css -o web/output.css
-
       - name: Verify Tailwind
         run: |
+          tailwindcss -i web/input.css -o web/output.css
           DIFF=$(git diff)
           if [ -n "$DIFF" ]; then
             echo "::error file=web/output.css,line=1,col=1,title=STALE-TAILWIND::Tailwind generated CSS was out of date! Please regenerate it."
@@ -31,3 +29,16 @@ jobs:
             git diff
             exit 1
           fi
+
+      - name: Verify Templ
+        run: |
+          go tool templ generate
+          DIFF=$(git diff)
+          if [ -n "$DIFF" ]; then
+            echo "::error title=STALE-TEMPL::Templ generation was out of date! Please regenerate it."
+            echo "Diff:"
+            echo ""
+            git diff
+            exit 1
+          fi
+
