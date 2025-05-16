@@ -101,78 +101,86 @@ func (w Workout) Advance() Workout {
 }
 
 func newDefaultWorkout() Workout {
+	stages := slices.Collect(concat(
+		iterOf(newReps("Warmup", "Shoulder Rolls", 10)),
+		iterOf(newReps("Warmup", "Scapular Shrugs", 10)),
+		iterOf(newReps("Warmup", "Cat/Camel", 10)),
+		iterOf(newReps("Warmup", "Band Pulldowns", 10)),
+		iterOf(newReps("Warmup", "Band Dislocates", 10)),
+		iterOf(newReps("Warmup", "Wrist Mobility", 1)),
+		iterOf(newHold("Warmup", "Hamstring Stretch (1 of 2)", 30*time.Second)),
+		iterOf(newHold("Warmup", "Hamstring Stretch (2 of 2)", 30*time.Second)),
+		repeat(3,
+			newWithRest(
+				newHold("Skill Work", "Parallel Bar Support", 30*time.Second),
+				60*time.Second,
+			),
+			newWithRest(
+				newHold("Skill Work", "Handstand (Wall Start)", 30*time.Second),
+				60*time.Second,
+			),
+		),
+		repeat(3,
+			newWithRest(
+				newReps("Strength Work (Set 1)", "RTO Pushup", 8),
+				90*time.Second,
+			),
+			newWithRest(
+				newReps("Strength Work (Set 1)", "Tuck Ice Cream Makers", 8),
+				90*time.Second,
+			),
+		),
+		repeat(3,
+			newWithRest(
+				newHold("Strength Work (Set 2)", "L-Sit (Foot Supported)", 30*time.Second),
+				90*time.Second,
+			),
+			newWithRest(
+				newReps("Strength Work (Set 2)", "One-foot Step Ups", 8),
+				90*time.Second,
+			),
+		),
+		repeat(3,
+			newWithRest(
+				newReps("Strength Work (Set 3)", "Pullups", 8),
+				90*time.Second,
+			),
+			newWithRest(
+				newReps("Strength Work (Set 3)", "Ring Dips", 8),
+				90*time.Second,
+			),
+		),
+		repeat(3,
+			newWithRest(
+				newHold("Bodyline Drills", "Plank (Elbows)", 30*time.Second),
+				60*time.Second,
+			),
+			// No rest after Left Elbow; go straight to Right Elbow
+			iterOf(newHold("Bodyline Drills", "Side Plank (Left Elbow)", 30*time.Second)),
+			newWithRest(
+				newHold("Bodyline Drills", "Side Plank (Right Elbow)", 30*time.Second),
+				60*time.Second,
+			),
+			newWithRest(
+				newHold("Bodyline Drills", "Hollow Hold", 30*time.Second),
+				60*time.Second,
+			),
+			newWithRest(
+				newHold("Bodyline Drills", "Superman", 30*time.Second),
+				60*time.Second,
+			),
+		),
+	))
+
+	// There doesn't need to be any rest at the end of the workout.
+	lastStage := stages[len(stages)-1]
+	if _, ok := lastStage.(Rest); ok {
+		stages = stages[:len(stages)-1]
+	}
+
 	return Workout{
-		ID: uuid.NewString(),
-		Stages: slices.Collect(concat(
-			iterOf(newReps("Warmup", "Shoulder Rolls", 10)),
-			iterOf(newReps("Warmup", "Scapular Shrugs", 10)),
-			iterOf(newReps("Warmup", "Cat/Camel", 10)),
-			iterOf(newReps("Warmup", "Band Pulldowns", 10)),
-			iterOf(newReps("Warmup", "Band Dislocates", 10)),
-			iterOf(newReps("Warmup", "Wrist Mobility", 1)),
-			iterOf(newHold("Warmup", "Hamstring Stretch (1 of 2)", 30*time.Second)),
-			iterOf(newHold("Warmup", "Hamstring Stretch (2 of 2)", 30*time.Second)),
-			repeat(3,
-				newWithRest(
-					newHold("Skill Work", "Parallel Bar Support", 30*time.Second),
-					60*time.Second,
-				),
-				newWithRest(
-					newHold("Skill Work", "Handstand (Wall Start)", 30*time.Second),
-					60*time.Second,
-				),
-			),
-			repeat(3,
-				newWithRest(
-					newReps("Strength Work (Set 1)", "RTO Pushup", 8),
-					90*time.Second,
-				),
-				newWithRest(
-					newReps("Strength Work (Set 1)", "Tuck Ice Cream Makers", 8),
-					90*time.Second,
-				),
-			),
-			repeat(3,
-				newWithRest(
-					newHold("Strength Work (Set 2)", "L-Sit (Foot Supported)", 30*time.Second),
-					90*time.Second,
-				),
-				newWithRest(
-					newReps("Strength Work (Set 2)", "One-foot Step Ups", 8),
-					90*time.Second,
-				),
-			),
-			repeat(3,
-				newWithRest(
-					newReps("Strength Work (Set 3)", "Pullups", 8),
-					90*time.Second,
-				),
-				newWithRest(
-					newReps("Strength Work (Set 3)", "Ring Dips", 8),
-					90*time.Second,
-				),
-			),
-			repeat(3,
-				newWithRest(
-					newHold("Bodyline Drills", "Plank (Elbows)", 30*time.Second),
-					60*time.Second,
-				),
-				// No rest after Left Elbow; go straight to Right Elbow
-				iterOf(newHold("Bodyline Drills", "Side Plank (Left Elbow)", 30*time.Second)),
-				newWithRest(
-					newHold("Bodyline Drills", "Side Plank (Right Elbow)", 30*time.Second),
-					60*time.Second,
-				),
-				newWithRest(
-					newHold("Bodyline Drills", "Hollow Hold", 30*time.Second),
-					60*time.Second,
-				),
-				newWithRest(
-					newHold("Bodyline Drills", "Superman", 30*time.Second),
-					60*time.Second,
-				),
-			),
-		)),
+		ID:     uuid.NewString(),
+		Stages: stages,
 	}
 }
 
