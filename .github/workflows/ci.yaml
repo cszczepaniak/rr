@@ -4,9 +4,8 @@ on:
     branches: [main]
   pull_request:
 jobs:
-  CI:
-    env:
-      TAILWIND_VERSION: v4.1.5
+  build:
+    name: "Build"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,7 +14,8 @@ jobs:
       - name: Build
         run: go build
 
-  VerifyTailwind:
+  verify_tailwind:
+    name: "Verify Tailwind"
     env:
       TAILWIND_VERSION: v4.1.5
     runs-on: ubuntu-latest
@@ -41,7 +41,8 @@ jobs:
             exit 1
           fi
 
-  VerifyTempl:
+  verify_templ:
+    name: "Verify Templ"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
