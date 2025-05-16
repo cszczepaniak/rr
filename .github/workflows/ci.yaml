@@ -14,6 +14,16 @@ jobs:
       - name: Build
         run: go build
 
+  unit-tests:
+    name: "Unit Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+
+      - name: Run Tests
+        run: go test -v ./...
+
   verify_tailwind:
     name: "Verify Tailwind"
     env:
@@ -54,6 +64,25 @@ jobs:
           DIFF=$(git diff)
           if [ -n "$DIFF" ]; then
             echo "::error title=STALE-TEMPL::Templ generation was out of date! Please regenerate it."
+            echo "Diff:"
+            echo ""
+            git diff
+            exit 1
+          fi
+
+  verify_gomod:
+    name: "Verify Go Modules"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+
+      - name: Verify Go Modules
+        run: |
+          go mod tidy
+          DIFF=$(git diff)
+          if [ -n "$DIFF" ]; then
+            echo "::error title=STALE-GOMOD::Go Modules were out of date! Please run go mod tidy."
             echo "Diff:"
             echo ""
             git diff
