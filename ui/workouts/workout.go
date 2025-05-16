@@ -1,14 +1,13 @@
 package workouts
 
 import (
+	"datastar/rr/foundations/datastar"
 	"datastar/rr/service/workouts"
 	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
-
-	datastar "github.com/starfederation/datastar/sdk/go"
 )
 
 type Handler struct {
@@ -103,16 +102,16 @@ func (h Handler) AdvanceWorkout() http.Handler {
 		}
 		viewData.WorkoutID = id
 
-		sse := datastar.NewSSE(w, r)
+		responder := datastar.NewResponder(w)
 
 		// If there's an interval signal, it means there's a timer that was running on the previous
 		// page. We'd like to stop that timer so it doesn't keep running when the workout loads!
 		if signalData.Interval != 0 {
 			script := fmt.Sprintf("window.clearInterval(%v)", signalData.Interval)
-			sse.ExecuteScript(script)
+			responder.ExecuteScript(script)
 		}
 
-		err = sse.MergeFragmentTempl(body(viewData))
+		err = responder.MergeFragmentTempl(r.Context(), body(viewData))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
