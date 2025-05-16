@@ -211,7 +211,7 @@ func body(data viewData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\" class=\"bg-blue-200 rounded-md text-xl py-4 px-4 hover:cursor-pointer\">Next</button></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\" class=\"bg-blue-200 rounded-md text-xl -m-4 md:m-0 p-8 md:p-4 hover:cursor-pointer\">Next</button></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
