@@ -41,7 +41,7 @@ func (r Responder) MergeFragment(frag []byte) {
 
 	r.writeEvent(mergeFragments)
 	for ln := range bytes.Lines(frag) {
-		r.writeData("fragments", ln)
+		r.writeData("fragments", bytes.TrimSuffix(ln, []byte{'\n'}))
 	}
 }
 
@@ -65,7 +65,7 @@ func (r Responder) ExecuteScript(script string) {
 
 	r.writeEvent(mergeFragments)
 	for ln := range strings.Lines(script) {
-		r.writeData("script", []byte(ln))
+		r.writeData("script", []byte(strings.TrimSuffix(ln, "\n")))
 	}
 }
 
