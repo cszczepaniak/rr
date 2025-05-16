@@ -48,7 +48,7 @@ func (h Handler) GetWorkout() http.Handler {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		viewData.WorkoutID = id
+		viewData.workoutID = id
 
 		err = Workout(viewData).Render(r.Context(), w)
 		if err != nil {
@@ -101,7 +101,7 @@ func (h Handler) AdvanceWorkout() http.Handler {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		viewData.WorkoutID = id
+		viewData.workoutID = id
 
 		sse := datastar.NewSSE(w, r)
 
@@ -120,47 +120,47 @@ func (h Handler) AdvanceWorkout() http.Handler {
 	})
 }
 
-type ViewData struct {
-	WorkoutID       string
-	CurrentMovement Movement
-	IsDone          bool
+type viewData struct {
+	workoutID       string
+	currentMovement movement
+	isDone          bool
 
-	IsResting    bool
-	RestDuration time.Duration
-	AfterRest    string
+	isResting    bool
+	restDuration time.Duration
+	afterRest    string
 }
 
-type Movement struct {
-	Category string
-	Name     string
-	Reps     int
-	Dur      time.Duration
+type movement struct {
+	category string
+	name     string
+	reps     int
+	dur      time.Duration
 }
 
-func stageToViewData(s workouts.Stage) (ViewData, error) {
-	viewData := ViewData{
-		CurrentMovement: Movement{
-			Category: s.Category(),
-			Name:     s.Name(),
+func stageToViewData(s workouts.Stage) (viewData, error) {
+	data := viewData{
+		currentMovement: movement{
+			category: s.Category(),
+			name:     s.Name(),
 		},
 	}
 
 	switch s := s.(type) {
 	case workouts.End:
-		return ViewData{
-			IsDone: true,
+		return viewData{
+			isDone: true,
 		}, nil
 	case workouts.Hold:
-		viewData.CurrentMovement.Dur = s.Duration
+		data.currentMovement.dur = s.Duration
 	case workouts.Reps:
-		viewData.CurrentMovement.Reps = s.Reps
+		data.currentMovement.reps = s.Reps
 	case workouts.Rest:
-		viewData.IsResting = true
-		viewData.RestDuration = s.Duration
-		viewData.AfterRest = s.Name()
+		data.isResting = true
+		data.restDuration = s.Duration
+		data.afterRest = s.Name()
 	default:
-		return ViewData{}, fmt.Errorf("unexpected workouts.Stage: %#v", s)
+		return viewData{}, fmt.Errorf("unexpected workouts.Stage: %#v", s)
 	}
 
-	return viewData, nil
+	return data, nil
 }
