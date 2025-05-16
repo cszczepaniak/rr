@@ -6,8 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/alecthomas/assert/v2"
 )
 
 type testServer struct {
@@ -30,11 +29,11 @@ func (ts testServer) emptyRequest(t *testing.T) string {
 	t.Helper()
 
 	resp, err := http.Get(ts.s.URL)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	defer resp.Body.Close()
 
 	bs, err := io.ReadAll(resp.Body)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	return string(bs)
 }
 
