@@ -1,13 +1,14 @@
 package main
 
 import (
-	workoutservice "datastar/rr/service/workouts"
-	"datastar/rr/ui"
-	"datastar/rr/ui/workouts"
 	"embed"
 	"log/slog"
 	"net/http"
 	"os"
+
+	workoutservice "github.com/cszczepaniak/rr/service/workouts"
+	"github.com/cszczepaniak/rr/ui"
+	"github.com/cszczepaniak/rr/ui/workouts"
 )
 
 //go:embed web/*

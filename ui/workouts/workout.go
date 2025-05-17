@@ -1,13 +1,14 @@
 package workouts
 
 import (
-	"datastar/rr/foundations/datastar"
-	"datastar/rr/service/workouts"
 	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
+
+	"github.com/cszczepaniak/rr/foundations/datastar"
+	"github.com/cszczepaniak/rr/service/workouts"
 )
 
 type Handler struct {

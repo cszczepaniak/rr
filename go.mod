@@ -1,4 +1,4 @@
-module datastar/rr
+module github.com/cszczepaniak/rr
 
 go 1.24.2
 

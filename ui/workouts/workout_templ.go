@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"datastar/rr/ui/components"
+	"github.com/cszczepaniak/rr/ui/components"
 	"time"
 )
 
